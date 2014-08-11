@@ -16,45 +16,44 @@ session_start();
 
 do_html_header("List all Papers", "all");
 
-if (isset($HTTP_POST_VARS['SortOrder']))   {
+if (isset($HTTP_POST_VARS['SortOrder'])) {
   $SortOrder = $HTTP_POST_VARS['SortOrder'];
-} else {
+}
+else {
   $SortOrder = "Title";
 }
 
 $paperlist = get_papers_and_proceedings($SortOrder);
-if ($paperlist ) {
-?>
-<form method="post" action="list_papers.php">
-<table>
-<tr>
-   <th><input type="submit" name="SortOrder" value="Title"/></th>
-   <th><input type="submit" name="SortOrder" value="Date"/></th>
-   <th><input type="submit" name="SortOrder" value="pp"/></th>
-   <th colspan="2">Formats</th>
-</tr>
-<?php
-  foreach ($paperlist as $paper)
-  {
-    echo "<tr><td>";
-    echo "<a href=\"show_pap.php?f=1&amp;num=".$paper["paperid"]."\">".$paper["papertitle"]."</a>\n"; 
+if ($paperlist) {
+  ?>
+  <form method="post" action="list_papers.php">
+    <table>
+      <tr>
+        <th><input type="submit" name="SortOrder" value="Title" /></th>
+        <th><input type="submit" name="SortOrder" value="Date" /></th>
+        <th><input type="submit" name="SortOrder" value="pp" /></th>
+        <th colspan="2">Formats</th>
+      </tr>
+    <?php
+    foreach ($paperlist as $paper) {
+      echo "<tr><td>";
+      echo "<a href=\"show_pap.php?f=1&amp;num=" . $paper["paperid"] . "\">" . $paper["papertitle"] . "</a>\n";
 
-    $authorlist = get_authors_by_listid($paper["paperid"]);
-    echo " ".make_namelist($authorlist, ", ", "[No authors recorded]", 1);
+      $authorlist = get_authors_by_listid($paper["paperid"]);
+      echo " " . make_namelist($authorlist, ", ", "[No authors recorded]", 1);
 
-    echo "</td><td>".$paper["pubyear"]; 
-    echo "</td><td>".$paper["pages"]; 
-    echo "</td><td>";
-    echo " <a href=\"show_pap.php?f=2&amp;num=".$paper["paperid"]."\">BibTEX</a>\n"; 
-    echo "</td><td>";
-    echo " <a href=\"show_pap.php?f=3&amp;num=".$paper["paperid"]."\">Refer</a>\n";
-    echo "</td></tr>";
-  }
-  echo "</table></form>\n";
-}
+      echo "</td><td>" . $paper["pubyear"];
+      echo "</td><td>" . $paper["pages"];
+      echo "</td><td>";
+      echo " <a href=\"show_pap.php?f=2&amp;num=" . $paper["paperid"] . "\">BibTEX</a>\n";
+      echo "</td><td>";
+      echo " <a href=\"show_pap.php?f=3&amp;num=" . $paper["paperid"] . "\">Refer</a>\n";
+      echo "</td></tr>";
+    }
+    echo "</table></form>\n";
+    }
 else {
   do_para("No papers in database.");
 }
 do_html_footer();
 
-?>

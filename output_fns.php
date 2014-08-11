@@ -1,18 +1,18 @@
 /**
- * output_fns.php
- *
- * Copyright (c) 2000-2004 Ruth Ivimey-Cook
- * Licensed under the GNU GPL. For full terms see the file COPYING.
- *
- * Process an administrator login request.
- *
- * $Id: output_fns.php,v 1.4 2005/09/27 21:33:53 rivimey Exp $
- */
+* output_fns.php
+*
+* Copyright (c) 2000-2004 Ruth Ivimey-Cook
+* Licensed under the GNU GPL. For full terms see the file COPYING.
+*
+* Process an administrator login request.
+*
+* $Id: output_fns.php,v 1.4 2005/09/27 21:33:53 rivimey Exp $
+*/
 
 <?php
 
-require_once("misc_fns.php");  // namelist fns
-                 
+require_once("misc_fns.php"); // namelist fns
+
 //------------------------------------------------------------------------------------------------------------------------------
 // display_proceedings
 //
@@ -21,23 +21,19 @@ require_once("misc_fns.php");  // namelist fns
 //
 //------------------------------------------------------------------------------------------------------------------------------
 
-function display_proceedings($proceeding_array)
-{
+function display_proceedings($proceeding_array) {
   //display all proceedings in the array passed in
-  if (!is_array($proceeding_array))
-  {
-     echo "No proceedings in this category are listed.";
+  if (!is_array($proceeding_array)) {
+    echo "No proceedings in this category are listed.";
   }
-  else
-  {
+  else {
     //create table
     echo "<table width = \"100%\" border = 0>";
 
     //create a table row for each proceeding
-    foreach ($proceeding_array as $row)
-    {
+    foreach ($proceeding_array as $row) {
       echo "<tr><td>";
-      do_html_url("show_book.php?f=4&amp;num=".($row["proceedingid"]), $row["title"]);
+      do_html_url("show_book.php?f=4&amp;num=" . ($row["proceedingid"]), $row["title"]);
       echo "</td><td>";
       echo $row["editors"];
       echo "</td></tr>";
@@ -56,46 +52,46 @@ function display_proceedings($proceeding_array)
 //
 //------------------------------------------------------------------------------------------------------------------------------
 
-function display_paper_link($paperinfo, $paper)
-{
+function display_paper_link($paperinfo, $paper) {
   // Get the names of the authors of this paper.
-  $auths="";
+  $auths = "";
   if (is_array($authorlist = get_authors_by_listid($paper["paperid"]))) {
     $auths = make_namelist($authorlist, ", ", "No authors recorded.", 1);
   }
-  
+
   // Try to find any files associated with the paper.
   $flinks = "";
   $files = get_paper_file_ids($paper["paperid"]);
   if (is_array($files)) {
     $flinks = "<span>[";
     $num = count($files) - 1;
-    for($count = 0; $count <= $num; $count++) {
+    for ($count = 0; $count <= $num; $count++) {
       $fid = $files[$count]["fileid"];
       $fty = $files[$count]["filetype"];
       $flinks .= "<a href=\"send_file.php?num=$fid\">$fty</a>";
-      if ($count < $num)
+      if ($count < $num) {
         $flinks .= ", ";
+      }
     }
     $flinks .= "]</span>";
   }
-  
+
   // if we have the paperinfo (proceedings details like page start,end) then
   // use it to print the number of pages of the paper. Otherwise, just print name
   // and author.
   if (is_array($paperinfo)) {
     $totpgs = $paperinfo["lastpage"] - $paperinfo["firstpage"] + 1;
-    echo "<li><i><a href=\"show_pap.php?f=1&amp;num=".$paper["paperid"]."\">".$paper["title"]."</a></i>";
-    echo "&nbsp;".$auths.",".$totpgs." pages $flinks ";
+    echo "<li><i><a href=\"show_pap.php?f=1&amp;num=" . $paper["paperid"] . "\">" . $paper["title"] . "</a></i>";
+    echo "&nbsp;" . $auths . "," . $totpgs . " pages $flinks ";
   }
   else {
-    echo "<li><i><a href=\"show_pap.php?f=1&amp;num=".$paper["paperid"]."\">".$paper["title"]."</a></i>";
-    echo "&nbsp;".$auths.", $flinks ";
+    echo "<li><i><a href=\"show_pap.php?f=1&amp;num=" . $paper["paperid"] . "\">" . $paper["title"] . "</a></i>";
+    echo "&nbsp;" . $auths . ", $flinks ";
   }
-    
+
   // if logged in as admin, show add paper link
-  if(session_is_registered("admin_user")) {
-    do_html_url("edit_paper.php?f=2&amp;num=".$paper["paperid"], "Add file...");
+  if (session_is_registered("admin_user")) {
+    do_html_url("edit_paper.php?f=2&amp;num=" . $paper["paperid"], "Add file...");
   }
   echo "</li>\n";
 }
@@ -110,67 +106,61 @@ function display_paper_link($paperinfo, $paper)
 //
 //------------------------------------------------------------------------------------------------------------------------------
 
-function display_book_details($proceeding, $verb)
-{
-   // display all details about this proceeding
-   if (is_array($proceeding))
-   {
-      // papers is from "paperlist"
-      $papers = get_paperinfo_by_proceedingid($proceeding["proceedingid"]);
+function display_book_details($proceeding, $verb) {
+  // display all details about this proceeding
+  if (is_array($proceeding)) {
+    // papers is from "paperlist"
+    $papers = get_paperinfo_by_proceedingid($proceeding["proceedingid"]);
 
-      echo "<b>Title:</b> ";
-      echo $proceeding["title"]."<br>\n";
-      if (!empty($proceeding["subtitle"])) {
-        echo "Subtitle: ";
-        echo $proceeding["subtitle"]."<br>\n";
-      }
-      echo "<b>Editors:</b> ";
-      $editorlist = get_editors_by_listid($proceeding["proceedingid"]);
-      echo make_namelist($editorlist, ", ", "No editors recorded.", 1);
+    echo "<b>Title:</b> ";
+    echo $proceeding["title"] . "<br>\n";
+    if (!empty($proceeding["subtitle"])) {
+      echo "Subtitle: ";
+      echo $proceeding["subtitle"] . "<br>\n";
+    }
+    echo "<b>Editors:</b> ";
+    $editorlist = get_editors_by_listid($proceeding["proceedingid"]);
+    echo make_namelist($editorlist, ", ", "No editors recorded.", 1);
 
-      echo "<br>\n";
-      if (!empty($proceeding["isbn"])) {
-        echo "<b>ISBN:</b> ";
-        echo $proceeding["isbn"]."<br>\n";
-      }
+    echo "<br>\n";
+    if (!empty($proceeding["isbn"])) {
+      echo "<b>ISBN:</b> ";
+      echo $proceeding["isbn"] . "<br>\n";
+    }
 
-      if (!empty($proceeding["issn"])) {
-        echo "<b>ISSN:</b> ";
-        echo $proceeding["issn"]."<br>\n";
-      }
+    if (!empty($proceeding["issn"])) {
+      echo "<b>ISSN:</b> ";
+      echo $proceeding["issn"] . "<br>\n";
+    }
 
-      echo "<b>Papers:</b>\n";
-      if ($papers != false)
-      {
-        if ($verb)
-        {
-          foreach ($papers as $paperinfo)
-          {
-            $paper = get_paper($paperinfo["paperid"]);
-            display_paper_verbose($paper);
-          }
-        }
-        else
-        {
-          echo "<ul>\n";
-          foreach ($papers as $paperinfo)
-          {
-            $paper = get_paper($paperinfo["paperid"]);
-            display_paper_link($paperinfo, $paper);
-          }
-          echo "</ul>\n";
+    echo "<b>Papers:</b>\n";
+    if ($papers != false) {
+      if ($verb) {
+        foreach ($papers as $paperinfo) {
+          $paper = get_paper($paperinfo["paperid"]);
+          display_paper_verbose($paper);
         }
       }
-      else
-         echo "No papers found.";
-      echo "<br>\n";
+      else {
+        echo "<ul>\n";
+        foreach ($papers as $paperinfo) {
+          $paper = get_paper($paperinfo["paperid"]);
+          display_paper_link($paperinfo, $paper);
+        }
+        echo "</ul>\n";
+      }
+    }
+    else {
+      echo "No papers found.";
+    }
+    echo "<br>\n";
 
-      return true;
-   }
-   else {
-      echo "display_book_details: passed non-array<br>\n";
-      return false;
-   }
+    return true;
+  }
+  else {
+    echo "display_book_details: passed non-array<br>\n";
+    return false;
+  }
 }
 
 
@@ -182,17 +172,12 @@ function display_book_details($proceeding, $verb)
 //
 //------------------------------------------------------------------------------------------------------------------------------
 
-function display_file_details($paper)
-{
-   $fids = get_paper_file_ids($paper["paperid"]);
-   if (is_array($fids)) {
-      echo "<b>Files:</b> ";
-      foreach ($fids as $fid) {
-         echo "<a href=\"send_file.php?num=".$fid['fileid']."\">".$fid['filetype']."</a>\n";
-      }
-   }
+function display_file_details($paper) {
+  $fids = get_paper_file_ids($paper["paperid"]);
+  if (is_array($fids)) {
+    echo "<b>Files:</b> ";
+    foreach ($fids as $fid) {
+      echo "<a href=\"send_file.php?num=" . $fid['fileid'] . "\">" . $fid['filetype'] . "</a>\n";
+    }
+  }
 }
-
-
-
-?>

@@ -23,48 +23,50 @@ $filedata1_filename = isset($_POST['filedata1_filename']) ? $_POST['filedata1_fi
 $filedata2_filename = isset($_POST['filedata2_filename']) ? $_POST['filedata2_filename'] : "";
 $filetype1 = isset($_POST['filetype1']) ? $_POST['filetype1'] : "";
 $filetype2 = isset($_POST['filetype2']) ? $_POST['filetype2'] : "";
-$procids = isset($_POST['procid']) ? $_POST['procid'] : null;
+$procids = isset($_POST['procid']) ? $_POST['procid'] : NULL;
 $title = $_POST['title'];
-$authors = isset($_POST['authors']) ? $_POST['authors'] : null;
+$authors = isset($_POST['authors']) ? $_POST['authors'] : NULL;
 $paper_url = $_POST['paper_url'];
 $reftext = $_POST['reftext'];
 $abstract = $_POST['abstract'];
 
 do_html_header("Adding a paper");
-if (check_admin_user())
-{ 
+if (check_admin_user()) {
   $papers = array();
-  $paperid = false;
-  if ($title != "")
-  {
+  $paperid = FALSE;
+  if ($title != "") {
     if ($filedata1_filename != "") {
       $papers[0] = add_paper_file($filedata1_filename, "No", $filetype1);
-      if (!$papers[0])
+      if (!$papers[0]) {
         echo "Could not add paper file $filedata1_filename to the database.<br>\n";
+      }
     }
     if ($filedata2_filename != "") {
       $papers[1] = add_paper_file($filedata2_filename, "No", $filetype2);
-      if (!$papers[1])
+      if (!$papers[1]) {
         echo "Could not add paper file $filedata2_filename to the database.<br>\n";
+      }
     }
 
     $paperid = insert_paper($procids, $title, $papers, $authors, $paper_url, $reftext, $abstract);
-    if($paperid == false)
+    if ($paperid == FALSE) {
       echo "Paper '$title' could not be added to the database.<br>\n";
+    }
     else {
       echo "Paper '$title' was added to the database with id $paperid.<br><br>\n";
       $paper = get_paper($paperid);
       display_paper_verbose($paper);
     }
   }
-  else
+  else {
     echo "Title was null: cannot add paper to database.<br>\n";
+  }
 
   echo "<ul><li>";
-  if ($paperid != false) {
-    do_html_url("show_pap.php?f=1&amp;num=".$paperid, "To paper details.");
+  if ($paperid != FALSE) {
+    do_html_url("show_pap.php?f=1&amp;num=" . $paperid, "To paper details.");
     echo "<li>";
-    do_html_url("edit_paper.php?f=2&amp;num=".$paperid, "Add file to paper.");
+    do_html_url("edit_paper.php?f=2&amp;num=" . $paperid, "Add file to paper.");
     echo "<li>";
   }
   do_html_url("insert_papers_form.php", "Add another paper.");
@@ -75,9 +77,8 @@ if (check_admin_user())
   echo "</ul>";
 
 }
-else 
-  echo "You are not authorised to view this page."; 
+else {
+  echo "You are not authorised to view this page.";
+}
 
 do_html_footer();
-
-?>

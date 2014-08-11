@@ -19,11 +19,10 @@ require_once("refer_output_fns.php");
 //
 //-----------------------------------------------------------------------------
 
-function mysql_to_unix($mysqldate)
-{
+function mysql_to_unix($mysqldate) {
   list ($date, $time) = explode(' ', $mysqldate);
-  list ($Yr, $Mo, $Dy)  = explode('-', $date);
-  list ($H, $M, $S)  = explode(':', $time);
+  list ($Yr, $Mo, $Dy) = explode('-', $date);
+  list ($H, $M, $S) = explode(':', $time);
   //echo "$H, $M, $S, $Mo, $Dy, $Yr";
   return mktime($H, $M, $S, $Mo, $Dy, $Yr);
 }
@@ -33,12 +32,12 @@ function mysql_to_unix($mysqldate)
 //
 //-----------------------------------------------------------------------------
 
-function get_lastmod($lm)
-{
+function get_lastmod($lm) {
   $lastmod = mysql_to_unix($lm);
   $now = time();
-  if ($lastmod > $now)
+  if ($lastmod > $now) {
     $lastmod = $now;
+  }
   return strftime("%a, %d %b %Y %H:%M:%S %Z", $lastmod);
 }
 
@@ -50,25 +49,24 @@ function get_lastmod($lm)
 //
 //-----------------------------------------------------------------------------
 
-function list_proceedings()
-{
+function list_proceedings() {
   do_html_header("List all Proceedings", "noindex");
 
   $proc_array = get_proceedings(1);
   if ($proc_array) {
     echo "<table cellpadding=\"2\">\n";
     echo "<tr><th>Title</th><th>Year</th><th colspan=\"2\">Formats</th></tr>\n";
-    foreach ($proc_array as $thisproc)
-    {
+    foreach ($proc_array as $thisproc) {
       echo "<tr><td>";
-      echo "<a href=\"show_proc.php?f=1&amp;num=".$thisproc["proceedingid"]."\">".$thisproc["title"]."</a>\n"; 
+      echo "<a href=\"show_proc.php?f=1&amp;num=" . $thisproc["proceedingid"] . "\">" . $thisproc["title"] . "</a>\n";
       echo "</td><td>";
-      if (isset($thisproc["pubyear"]))
-		echo $thisproc["pubyear"]; 
+      if (isset($thisproc["pubyear"])) {
+        echo $thisproc["pubyear"];
+      }
       echo "</td><td>";
-      echo " <a href=\"show_proc.php?f=2&amp;num=".$thisproc["proceedingid"]."\">BibTEX</a>\n"; 
+      echo " <a href=\"show_proc.php?f=2&amp;num=" . $thisproc["proceedingid"] . "\">BibTEX</a>\n";
       echo "</td><td>";
-      echo " <a href=\"show_proc.php?f=3&amp;num=".$thisproc["proceedingid"]."\">Refer</a>\n";
+      echo " <a href=\"show_proc.php?f=3&amp;num=" . $thisproc["proceedingid"] . "\">Refer</a>\n";
       echo "</td></tr>\n\n";
     }
     echo "</table>\n";
@@ -85,16 +83,15 @@ function list_proceedings()
 //
 //-----------------------------------------------------------------------------
 
-function list_proceedings_bibtex($plain)
-{
+function list_proceedings_bibtex($plain) {
   $lm = get_allpapers_last_modified();
-  header("Last-Modified: ".get_lastmod($lm));
+  header("Last-Modified: " . get_lastmod($lm));
 
   $proc_array = get_proceedings(1);
   foreach ($proc_array as $thisproc) {
     $paper_array = get_papers_by_proceedingid($thisproc["proceedingid"]);
     foreach ($paper_array as $thispaper) {
-      display_paper_as_bibtex($thispaper, $plain);	// display plain text or as web page
+      display_paper_as_bibtex($thispaper, $plain); // display plain text or as web page
     }
   }
 }
@@ -106,16 +103,15 @@ function list_proceedings_bibtex($plain)
 //
 //-----------------------------------------------------------------------------
 
-function list_proceedings_refer($plain)
-{
+function list_proceedings_refer($plain) {
   $lm = get_allpapers_last_modified();
-  header("Last-Modified: ".get_lastmod($lm));
+  header("Last-Modified: " . get_lastmod($lm));
 
   $proc_array = get_proceedings(1);
   foreach ($proc_array as $thisproc) {
     $paper_array = get_papers_by_proceedingid($thisproc["proceedingid"]);
     foreach ($paper_array as $thispaper) {
-      display_paper_as_refer($thispaper, $plain);	// display plain text or as web page
+      display_paper_as_refer($thispaper, $plain); // display plain text or as web page
     }
   }
 }
@@ -124,8 +120,7 @@ function list_proceedings_refer($plain)
 //  text_headers
 //-----------------------------------------------------------------------------
 
-function text_headers($name)
-{
+function text_headers($name) {
   header("Cache-Control: public");
   header("Content-Disposition: inline; filename=$name");
 }
@@ -135,40 +130,40 @@ function text_headers($name)
 session_start();
 
 $f = isset($_GET['f']) ? $_GET['f'] : $_POST['f'];
-  
-if ($f > 0 && $f < 6 ) {
-  if ($f == 1) {     // list of proceedings, index style
+
+if ($f > 0 && $f < 6) {
+  if ($f == 1) { // list of proceedings, index style
     list_proceedings();
   }
   elseif ($f == 2) { // list of proceedings, long-format html BibTeX
     do_html_header("List Proceedings BibTeX", "noindex");
     text_headers("");
-    list_proceedings_bibtex(False);
+    list_proceedings_bibtex(FALSE);
   }
   elseif ($f == 3) { // list of proceedings, long-format html BibTeX
     do_html_header("List Proceedings Refer", "noindex");
     text_headers("");
-    list_proceedings_refer(False);
+    list_proceedings_refer(FALSE);
   }
   elseif ($f == 4) { // list of proceedings, long-format plain text BibTeX
     header("Content-Type: text/plain; charset=ISO-8859-1");
     text_headers("wotug.bib");
-    list_proceedings_bibtex(True);
+    list_proceedings_bibtex(TRUE);
   }
   elseif ($f == 5) { // list of proceedings, long-format plain text Refer
     header("Content-Type: text/plain; charset=ISO-8859-1");
     text_headers("wotug.rf");
-    list_proceedings_refer(True);
+    list_proceedings_refer(TRUE);
   }
 
 }
 else {
-    do_html_header("Refer", "none");
-    echo "list_proceeds: unimplemented function $f\n";
+  do_html_header("Refer", "none");
+  echo "list_proceeds: unimplemented function $f\n";
 }
 
 // no footer for plain-text output
-if (! ($f == 4 || $f == 5)) {
+if (!($f == 4 || $f == 5)) {
   do_html_footer();
 }
 

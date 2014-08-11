@@ -10,7 +10,6 @@
  * $Id: config.php,v 1.3 2004/11/16 00:52:20 rivimey Exp $
  */
 
-
 $configVersioni     = '1';
 $siteName           = "YourSite";
 $defaultLanguage    = 'en_US';
@@ -31,13 +30,12 @@ $maintain_stats     = true;               // write count and access time of sign
 //
 //------------------------------------------------------------------------------------------------------------------------------
 
-function local_html_header()
-{
+function local_html_header() {
   global $documentRootDir;
 
-  include $documentRootDir."style/style.htm";
+  include $documentRootDir . "style/style.htm";
   echo "</head><body>\n";
-  include $documentRootDir."style/banner.htm";
+  include $documentRootDir . "style/banner.htm";
 }
 
 //------------------------------------------------------------------------------------------------------------------------------
@@ -48,12 +46,11 @@ function local_html_header()
 //
 //------------------------------------------------------------------------------------------------------------------------------
 
-function local_html_footer()
-{
+function local_html_footer() {
   global $documentRootDir;
-?>
+  ?>
   <p>
-    <?php include $documentRootDir."/style/copy.htm" ?>
+    <?php include $documentRootDir . "/style/copy.htm" ?>
   </p>
 <?
 }

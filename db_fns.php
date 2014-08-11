@@ -21,18 +21,17 @@ require_once("/etc/paperdb/config.php");
 //
 //------------------------------------------------------------------------------------------------------------------------------
 
-function db_connect()
-{
+function db_connect() {
   global $MySQLServerAddress, $MySQLUsername, $MySQLPassword, $MySQLDatabase;
 
-  $result = @mysql_pconnect($MySQLServerAddress, $MySQLUsername, $MySQLPassword); 
+  $result = @mysql_pconnect($MySQLServerAddress, $MySQLUsername, $MySQLPassword);
   if (!$result) {
-     echo "db_connect: Could not connect to paper db at \"$MySQLUsername@$MySQLServerAddress\"<br>\n";
-     return false;
+    echo "db_connect: Could not connect to paper db at \"$MySQLUsername@$MySQLServerAddress\"<br>\n";
+    return FALSE;
   }
   if (!@mysql_select_db($MySQLDatabase)) {
-     echo "db_connect: Could not find database for paper db at \"$MySQLUsername@$MySQLServerAddress\"<br>\n";
-     return false;
+    echo "db_connect: Could not find database for paper db at \"$MySQLUsername@$MySQLServerAddress\"<br>\n";
+    return FALSE;
   }
 
   return $result;
@@ -46,14 +45,14 @@ function db_connect()
 //
 //------------------------------------------------------------------------------------------------------------------------------
 
-function db_result_to_array($result)
-{
-   $res_array = array();
+function db_result_to_array($result) {
+  $res_array = array();
 
-   for ($count=0; $row = @mysql_fetch_array($result); $count++)
-     $res_array[$count] = $row;
+  for ($count = 0; $row = @mysql_fetch_array($result); $count++) {
+    $res_array[$count] = $row;
+  }
 
-   return $res_array;
+  return $res_array;
 }
 
 //--------------------------------------------------------------------------------------
@@ -64,11 +63,10 @@ function db_result_to_array($result)
 //  then no quotes and transform "" to null
 //--------------------------------------------------------------------------------------
 
-function sqlvalue($str, $type = "A")
-{
+function sqlvalue($str, $type = "A") {
   if ($type == "A") {
     if (is_numeric($str)) {
-      return "'" .strval($str) . "'";
+      return "'" . strval($str) . "'";
     }
     else {
       return "'" . mysql_real_escape_string($str) . "'";
@@ -83,5 +81,3 @@ function sqlvalue($str, $type = "A")
     }
   }
 }
-
-?>

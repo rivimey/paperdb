@@ -20,21 +20,20 @@ require_once("db_fns.php");
 //
 //--------------------------------------------------------------------------------------
 
-function get_list_query($query)
-{
-   // query database for a list of papers in this proceeding
-   $conn = db_connect();
-   $result = @mysql_query($query);
-   if (!$result) {
-      #echo "get_list_query: query \"$query\" failed.<br>\n";
-      return false;
-   }
-   $num = @mysql_num_rows($result);
-   if ($num == 0) {
-      return false;  
-   }
-   $result = db_result_to_array($result);
-   return $result; 
+function get_list_query($query) {
+  // query database for a list of papers in this proceeding
+  $conn = db_connect();
+  $result = @mysql_query($query);
+  if (!$result) {
+    #echo "get_list_query: query \"$query\" failed.<br>\n";
+    return FALSE;
+  }
+  $num = @mysql_num_rows($result);
+  if ($num == 0) {
+    return FALSE;
+  }
+  $result = db_result_to_array($result);
+  return $result;
 }
 
 //--------------------------------------------------------------------------------------
@@ -44,23 +43,22 @@ function get_list_query($query)
 //
 //--------------------------------------------------------------------------------------
 
-function get_proceedingid_for_paper($paperid)
-{
-   // query database for a list of papers in this proceeding
-   $conn = db_connect();
-   $query = "select * from proceedings where paperlist.paperid ='$paperid' and paperlist.proceedingid = proceedings.proceedingid"; 
-   $result = @mysql_query($query);
-   if (!$result) {
-      echo "get_proceedingid_for_paper: query \"$query\" failed.<br>\n";
-      return false;
-   }
-   $num = @mysql_num_rows($result);
-   if ($num == 0) {
-      echo "get_proceedingid_for_paper: no proceedings found for paper $paperid.<br>\n";
-      return false;  
-   }
-   $result = db_result_to_array($result);
-   return $result; 
+function get_proceedingid_for_paper($paperid) {
+  // query database for a list of papers in this proceeding
+  $conn = db_connect();
+  $query = "select * from proceedings where paperlist.paperid ='$paperid' and paperlist.proceedingid = proceedings.proceedingid";
+  $result = @mysql_query($query);
+  if (!$result) {
+    echo "get_proceedingid_for_paper: query \"$query\" failed.<br>\n";
+    return FALSE;
+  }
+  $num = @mysql_num_rows($result);
+  if ($num == 0) {
+    echo "get_proceedingid_for_paper: no proceedings found for paper $paperid.<br>\n";
+    return FALSE;
+  }
+  $result = db_result_to_array($result);
+  return $result;
 }
 
 //--------------------------------------------------------------------------------------
@@ -70,24 +68,23 @@ function get_proceedingid_for_paper($paperid)
 //
 //--------------------------------------------------------------------------------------
 
-function get_paperinfo_by_proceedingid($procid)
-{
-   // query database for a list of papers in this proceeding
-   $conn = db_connect();
-   $query = "select * from paperlist where proceedingid ='$procid' order by firstpage"; 
-   $result = @mysql_query($query);
-   if (!$result) {
-      echo "get_paperinfo_by_proceedingid: query \"$query\" failed.<br>\n";
-      echo mysql_errno().": ".mysql_error()."<br>";
-      return false;
-   }
-   $num = @mysql_num_rows($result);
-   if ($num == 0) {
-     //echo "get_paperinfo_by_proceedingid: no papers found.<br>\n";
-      return false;  
-   }
-   $result = db_result_to_array($result);
-   return $result; 
+function get_paperinfo_by_proceedingid($procid) {
+  // query database for a list of papers in this proceeding
+  $conn = db_connect();
+  $query = "select * from paperlist where proceedingid ='$procid' order by firstpage";
+  $result = @mysql_query($query);
+  if (!$result) {
+    echo "get_paperinfo_by_proceedingid: query \"$query\" failed.<br>\n";
+    echo mysql_errno() . ": " . mysql_error() . "<br>";
+    return FALSE;
+  }
+  $num = @mysql_num_rows($result);
+  if ($num == 0) {
+    //echo "get_paperinfo_by_proceedingid: no papers found.<br>\n";
+    return FALSE;
+  }
+  $result = db_result_to_array($result);
+  return $result;
 }
 
 //--------------------------------------------------------------------------------------
@@ -100,56 +97,55 @@ function get_paperinfo_by_proceedingid($procid)
 //
 //--------------------------------------------------------------------------------------
 
-function get_editors()
-{
-   $conn = db_connect();
+function get_editors() {
+  $conn = db_connect();
 
-   $query = "drop table if exists list_of_eds";
-   $editorlist = @mysql_query($query);
-   if (!$editorlist) {
-      echo "get_editors: query \"$query\" failed.<br>\n";
-      echo mysql_errno().": ".mysql_error()."<br>";
-      return false;
-   }
+  $query = "drop table if exists list_of_eds";
+  $editorlist = @mysql_query($query);
+  if (!$editorlist) {
+    echo "get_editors: query \"$query\" failed.<br>\n";
+    echo mysql_errno() . ": " . mysql_error() . "<br>";
+    return FALSE;
+  }
 
-   $query = "create temporary table list_of_eds ".
-            "select distinct editorlist.editorid from people,editorlist ".
-            "where editorlist.editorid = people.personid"; 
-   $editorlist = @mysql_query($query);
+  $query = "create temporary table list_of_eds " .
+    "select distinct editorlist.editorid from people,editorlist " .
+    "where editorlist.editorid = people.personid";
+  $editorlist = @mysql_query($query);
 
-   if (!$editorlist) {
-      echo "get_editors: query \"$query\" failed.<br>\n";
-      echo mysql_errno().": ".mysql_error()."<br>";
-      return false;
-   }
+  if (!$editorlist) {
+    echo "get_editors: query \"$query\" failed.<br>\n";
+    echo mysql_errno() . ": " . mysql_error() . "<br>";
+    return FALSE;
+  }
 
-   $query = "select people.* from people,list_of_eds ".
-            "where list_of_eds.editorid = people.personid ".
-	    "order by people.lastname, people.firstname"; 
-   $editorlist = @mysql_query($query);
-   if (!$editorlist) {
-      echo "get_editors: query \"$query\" failed.<br>\n";
-      echo mysql_errno().": ".mysql_error()."<br>";
-      return false;
-   }
+  $query = "select people.* from people,list_of_eds " .
+    "where list_of_eds.editorid = people.personid " .
+    "order by people.lastname, people.firstname";
+  $editorlist = @mysql_query($query);
+  if (!$editorlist) {
+    echo "get_editors: query \"$query\" failed.<br>\n";
+    echo mysql_errno() . ": " . mysql_error() . "<br>";
+    return FALSE;
+  }
 
-   $num_editors = @mysql_num_rows($editorlist);
-   $result = db_result_to_array($editorlist);
+  $num_editors = @mysql_num_rows($editorlist);
+  $result = db_result_to_array($editorlist);
 
-   $query = "drop table list_of_eds";
-   $editorlist = @mysql_query($query);
-   if (!$editorlist) {
-      echo "get_editors: query \"$query\" failed.<br>\n";
-      echo mysql_errno().": ".mysql_error()."<br>";
-      return false;
-   }
+  $query = "drop table list_of_eds";
+  $editorlist = @mysql_query($query);
+  if (!$editorlist) {
+    echo "get_editors: query \"$query\" failed.<br>\n";
+    echo mysql_errno() . ": " . mysql_error() . "<br>";
+    return FALSE;
+  }
 
-   if ($num_editors == 0) {
-      echo "get_editors: no editors for listid $editors.<br>\n";
-      echo mysql_errno().": ".mysql_error()."<br>";
-      return false;  
-   }
-   return $result; 
+  if ($num_editors == 0) {
+    echo "get_editors: no editors for listid $editors.<br>\n";
+    echo mysql_errno() . ": " . mysql_error() . "<br>";
+    return FALSE;
+  }
+  return $result;
 }
 
 //--------------------------------------------------------------------------------------
@@ -162,56 +158,55 @@ function get_editors()
 //
 //--------------------------------------------------------------------------------------
 
-function get_authors()
-{
-   $conn = db_connect();
+function get_authors() {
+  $conn = db_connect();
 
-   $query = "drop table if exists list_of_auths";
-   $authorlist = @mysql_query($query);
-   if (!$authorlist) {
-      echo "get_authors: query \"$query\" failed.<br>\n";
-      echo mysql_errno().": ".mysql_error()."<br>";
-      return false;
-   }
+  $query = "drop table if exists list_of_auths";
+  $authorlist = @mysql_query($query);
+  if (!$authorlist) {
+    echo "get_authors: query \"$query\" failed.<br>\n";
+    echo mysql_errno() . ": " . mysql_error() . "<br>";
+    return FALSE;
+  }
 
-   $query = "create temporary table list_of_auths ".
-            "select distinct authorlist.authorid from people,authorlist ".
-            "where authorlist.authorid = people.personid"; 
-   $authorlist = @mysql_query($query);
+  $query = "create temporary table list_of_auths " .
+    "select distinct authorlist.authorid from people,authorlist " .
+    "where authorlist.authorid = people.personid";
+  $authorlist = @mysql_query($query);
 
-   if (!$authorlist) {
-      echo "get_authors: query \"$query\" failed.<br>\n";
-      echo mysql_errno().": ".mysql_error()."<br>";
-      return false;
-   }
+  if (!$authorlist) {
+    echo "get_authors: query \"$query\" failed.<br>\n";
+    echo mysql_errno() . ": " . mysql_error() . "<br>";
+    return FALSE;
+  }
 
-   $query = "select people.* from people,list_of_auths ".
-            "where list_of_auths.authorid = people.personid ".
-	    "order by people.lastname, people.firstname"; 
-   $authorlist = @mysql_query($query);
-   if (!$authorlist) {
-      echo "get_authors: query \"$query\" failed.<br>\n";
-      echo mysql_errno().": ".mysql_error()."<br>";
-      return false;
-   }
+  $query = "select people.* from people,list_of_auths " .
+    "where list_of_auths.authorid = people.personid " .
+    "order by people.lastname, people.firstname";
+  $authorlist = @mysql_query($query);
+  if (!$authorlist) {
+    echo "get_authors: query \"$query\" failed.<br>\n";
+    echo mysql_errno() . ": " . mysql_error() . "<br>";
+    return FALSE;
+  }
 
-   $num_authors = @mysql_num_rows($authorlist);
-   $result = db_result_to_array($authorlist);
+  $num_authors = @mysql_num_rows($authorlist);
+  $result = db_result_to_array($authorlist);
 
-   $query = "drop table list_of_auths";
-   $authorlist = @mysql_query($query);
-   if (!$authorlist) {
-      echo "get_authors: query \"$query\" failed.<br>\n";
-      echo mysql_errno().": ".mysql_error()."<br>";
-      return false;
-   }
+  $query = "drop table list_of_auths";
+  $authorlist = @mysql_query($query);
+  if (!$authorlist) {
+    echo "get_authors: query \"$query\" failed.<br>\n";
+    echo mysql_errno() . ": " . mysql_error() . "<br>";
+    return FALSE;
+  }
 
-   if ($num_authors == 0) {
-      echo "get_authors: no authors for listid $authors.<br>\n";
-      echo mysql_errno().": ".mysql_error()."<br>";
-      return false;  
-   }
-   return $result; 
+  if ($num_authors == 0) {
+    echo "get_authors: no authors for listid $authors.<br>\n";
+    echo mysql_errno() . ": " . mysql_error() . "<br>";
+    return FALSE;
+  }
+  return $result;
 }
 
 //--------------------------------------------------------------------------------------
@@ -222,19 +217,18 @@ function get_authors()
 //
 //--------------------------------------------------------------------------------------
 
-function get_editor_papercount($personid)
-{
-   // query database for a proceeding
-   $conn = db_connect();
-   $query = "select distinct editors from editorlist where editorid=".sqlvalue($personid,"N")." order by ordering";
-   $result = @mysql_query($query);
-   if (!$result) {
-     echo "get_proceeding: query \"$query\" failed.<br>\n";
-     echo mysql_errno().": ".mysql_error()."<br>";
-     return false;
-   }
-   $num = @mysql_num_rows($result);
-   return $num;
+function get_editor_papercount($personid) {
+  // query database for a proceeding
+  $conn = db_connect();
+  $query = "select distinct editors from editorlist where editorid=" . sqlvalue($personid, "N") . " order by ordering";
+  $result = @mysql_query($query);
+  if (!$result) {
+    echo "get_proceeding: query \"$query\" failed.<br>\n";
+    echo mysql_errno() . ": " . mysql_error() . "<br>";
+    return FALSE;
+  }
+  $num = @mysql_num_rows($result);
+  return $num;
 }
 
 //--------------------------------------------------------------------------------------
@@ -245,19 +239,18 @@ function get_editor_papercount($personid)
 //
 //--------------------------------------------------------------------------------------
 
-function get_author_papercount($personid)
-{
-   // query database for a proceeding
-   $conn = db_connect();
-   $query = "select distinct authors from authorlist where authorid=".sqlvalue($personid,"N")." order by ordering";
-   $result = @mysql_query($query);
-   if (!$result) {
-     echo "get_proceeding: query \"$query\" failed.<br>\n";
-     echo mysql_errno().": ".mysql_error()."<br>";
-     return false;
-   }
-   $num = @mysql_num_rows($result);
-   return $num;
+function get_author_papercount($personid) {
+  // query database for a proceeding
+  $conn = db_connect();
+  $query = "select distinct authors from authorlist where authorid=" . sqlvalue($personid, "N") . " order by ordering";
+  $result = @mysql_query($query);
+  if (!$result) {
+    echo "get_proceeding: query \"$query\" failed.<br>\n";
+    echo mysql_errno() . ": " . mysql_error() . "<br>";
+    return FALSE;
+  }
+  $num = @mysql_num_rows($result);
+  return $num;
 }
 
 //--------------------------------------------------------------------------------------
@@ -268,25 +261,24 @@ function get_author_papercount($personid)
 //
 //--------------------------------------------------------------------------------------
 
-function get_authors_by_listid($author)
-{
-   // query database for the authors names for an author-list id
-   $conn = db_connect();
-   $query = "select personid,title,firstname,lastname from people,authorlist ".
-				"where authorlist.authors=".sqlvalue($author,"N")." and people.personid = authorlist.authorid ".
-				"order by authorlist.ordering asc"; 
-   $result = @mysql_query($query);
-   if (!$result) {
-      echo "get_authors_by_listid: query \"$query\" failed.<br>\n";
-      return false;
-   }
-   $num = @mysql_num_rows($result);
-   if ($num == 0) {
-      #echo "get_authors_by_listid: none found.<br>\n";
-      return false;  
-   }
-   $result = db_result_to_array($result);
-   return $result; 
+function get_authors_by_listid($author) {
+  // query database for the authors names for an author-list id
+  $conn = db_connect();
+  $query = "select personid,title,firstname,lastname from people,authorlist " .
+    "where authorlist.authors=" . sqlvalue($author, "N") . " and people.personid = authorlist.authorid " .
+    "order by authorlist.ordering asc";
+  $result = @mysql_query($query);
+  if (!$result) {
+    echo "get_authors_by_listid: query \"$query\" failed.<br>\n";
+    return FALSE;
+  }
+  $num = @mysql_num_rows($result);
+  if ($num == 0) {
+    #echo "get_authors_by_listid: none found.<br>\n";
+    return FALSE;
+  }
+  $result = db_result_to_array($result);
+  return $result;
 }
 
 //--------------------------------------------------------------------------------------
@@ -299,25 +291,24 @@ function get_authors_by_listid($author)
 //
 //--------------------------------------------------------------------------------------
 
-function get_editors_by_listid($editors)
-{
-   // query database for the editors names for an editor-list id
-   $conn = db_connect();
-   $query = "select personid,title,firstname,lastname from people,editorlist ".
-            "where editorlist.editors=".sqlvalue($editors,"N")." and people.personid = editorlist.editorid ".
-            "order by editorlist.ordering asc"; 
-   $result = @mysql_query($query);
-   if (!$result) {
-      echo "get_editors_by_listid: query \"$query\" failed.<br>\n";
-      return false;
-   }
-   $num = @mysql_num_rows($result);
-   if ($num == 0) {
-      #echo "get_editors_by_listid: none found.<br>\n";
-      return false;  
-   }
-   $result = db_result_to_array($result);
-   return $result; 
+function get_editors_by_listid($editors) {
+  // query database for the editors names for an editor-list id
+  $conn = db_connect();
+  $query = "select personid,title,firstname,lastname from people,editorlist " .
+    "where editorlist.editors=" . sqlvalue($editors, "N") . " and people.personid = editorlist.editorid " .
+    "order by editorlist.ordering asc";
+  $result = @mysql_query($query);
+  if (!$result) {
+    echo "get_editors_by_listid: query \"$query\" failed.<br>\n";
+    return FALSE;
+  }
+  $num = @mysql_num_rows($result);
+  if ($num == 0) {
+    #echo "get_editors_by_listid: none found.<br>\n";
+    return FALSE;
+  }
+  $result = db_result_to_array($result);
+  return $result;
 }
 
 
@@ -328,27 +319,27 @@ function get_editors_by_listid($editors)
 //
 //--------------------------------------------------------------------------------------
 
-function get_proceedings($ord)
-{
-   // query database for a list of categories
-   $conn = db_connect();
-   $query = "select title,proceedingid,pubyear from proceedings order by pubyear";
-   if ($ord == 0)
-     $query .= " desc";
-   $query .= ",title";
-   $result = @mysql_query($query);
-   if (!$result) {
-     echo "get_proceedings: query \"$query\" failed.<br>\n";
-     echo mysql_errno().": ".mysql_error()."<br>";
-     return false;
-   }
-   $num = @mysql_num_rows($result);
-   if ($num == 0) {
-      #echo "get_proceedings: none found.<br>\n";
-      return false;
-   }
-   $result = db_result_to_array($result);
-   return $result;
+function get_proceedings($ord) {
+  // query database for a list of categories
+  $conn = db_connect();
+  $query = "select title,proceedingid,pubyear from proceedings order by pubyear";
+  if ($ord == 0) {
+    $query .= " desc";
+  }
+  $query .= ",title";
+  $result = @mysql_query($query);
+  if (!$result) {
+    echo "get_proceedings: query \"$query\" failed.<br>\n";
+    echo mysql_errno() . ": " . mysql_error() . "<br>";
+    return FALSE;
+  }
+  $num = @mysql_num_rows($result);
+  if ($num == 0) {
+    #echo "get_proceedings: none found.<br>\n";
+    return FALSE;
+  }
+  $result = db_result_to_array($result);
+  return $result;
 }
 
 //--------------------------------------------------------------------------------------
@@ -358,24 +349,23 @@ function get_proceedings($ord)
 //
 //--------------------------------------------------------------------------------------
 
-function get_proceeding($num)
-{
-   // query database for a proceeding
-   $conn = db_connect();
-   $query = "select * from proceedings where proceedingid=".sqlvalue($num,"N");
-   $result = @mysql_query($query);
-   if (!$result) {
-     echo "get_proceeding: query \"$query\" failed.<br>\n";
-     echo mysql_errno().": ".mysql_error()."<br>\n";
-     return false;
-   }
-   $num = @mysql_num_rows($result);
-   if ($num != 1) {
-     echo "get_proceeding: query $query produced $num results (>1).<br>\n";
-     return false;
-   }
-   $result = @mysql_fetch_array($result);
-   return $result;
+function get_proceeding($num) {
+  // query database for a proceeding
+  $conn = db_connect();
+  $query = "select * from proceedings where proceedingid=" . sqlvalue($num, "N");
+  $result = @mysql_query($query);
+  if (!$result) {
+    echo "get_proceeding: query \"$query\" failed.<br>\n";
+    echo mysql_errno() . ": " . mysql_error() . "<br>\n";
+    return FALSE;
+  }
+  $num = @mysql_num_rows($result);
+  if ($num != 1) {
+    echo "get_proceeding: query $query produced $num results (>1).<br>\n";
+    return FALSE;
+  }
+  $result = @mysql_fetch_array($result);
+  return $result;
 }
 
 //--------------------------------------------------------------------------------------
@@ -385,28 +375,27 @@ function get_proceeding($num)
 //
 //--------------------------------------------------------------------------------------
 
-function get_paper_file_ids($num)
-{
-   // query database for a proceeding
-   $conn = db_connect();
-   $query = "select paperfile.fileid,paperfile.filename,paperfile.filetype from paperfilelist, paperfile ".
-            "where paperfilelist.paperid =".sqlvalue($num,"N")." and ".
-	    "paperfilelist.fileid = paperfile.fileid ".
-	    "order by paperfile.created";
-   
-   $result = @mysql_query($query);
-   if (!$result) {
-     echo "get_paper_file_ids: query \"$query\" failed.<br>\n";
-     echo mysql_errno().": ".mysql_error()."<br>\n";
-     return false;
-   }
-   $num = @mysql_num_rows($result);
-   if ($num == 0) {
-      //echo "get_paper_file_ids: no files.<br>\n";
-      return false;
-   }
-   $result = db_result_to_array($result);
-   return $result;
+function get_paper_file_ids($num) {
+  // query database for a proceeding
+  $conn = db_connect();
+  $query = "select paperfile.fileid,paperfile.filename,paperfile.filetype from paperfilelist, paperfile " .
+    "where paperfilelist.paperid =" . sqlvalue($num, "N") . " and " .
+    "paperfilelist.fileid = paperfile.fileid " .
+    "order by paperfile.created";
+
+  $result = @mysql_query($query);
+  if (!$result) {
+    echo "get_paper_file_ids: query \"$query\" failed.<br>\n";
+    echo mysql_errno() . ": " . mysql_error() . "<br>\n";
+    return FALSE;
+  }
+  $num = @mysql_num_rows($result);
+  if ($num == 0) {
+    //echo "get_paper_file_ids: no files.<br>\n";
+    return FALSE;
+  }
+  $result = db_result_to_array($result);
+  return $result;
 }
 
 //--------------------------------------------------------------------------------------
@@ -416,24 +405,23 @@ function get_paper_file_ids($num)
 //
 //--------------------------------------------------------------------------------------
 
-function get_file_by_id($num)
-{
-   // query database for a proceeding
-   $conn = db_connect();
-   $query = "select * from paperfile where fileid = '$num'";
-   $result = @mysql_query($query);
-   if (!$result) {
-     echo "get_paper_file_ids: query failed.<br>\n";
-     echo mysql_errno().": ".mysql_error()."<br>\n";
-     return false;
-   }
-   $num = @mysql_num_rows($result);
-   if ($num == 0) {
-      //echo "get_paper_file_ids: no files.<br>\n";
-      return false;
-   }
-   $result = @mysql_fetch_array($result);
-   return $result;
+function get_file_by_id($num) {
+  // query database for a proceeding
+  $conn = db_connect();
+  $query = "select * from paperfile where fileid = '$num'";
+  $result = @mysql_query($query);
+  if (!$result) {
+    echo "get_paper_file_ids: query failed.<br>\n";
+    echo mysql_errno() . ": " . mysql_error() . "<br>\n";
+    return FALSE;
+  }
+  $num = @mysql_num_rows($result);
+  if ($num == 0) {
+    //echo "get_paper_file_ids: no files.<br>\n";
+    return FALSE;
+  }
+  $result = @mysql_fetch_array($result);
+  return $result;
 }
 
 //--------------------------------------------------------------------------------------
@@ -444,24 +432,24 @@ function get_file_by_id($num)
 //
 //--------------------------------------------------------------------------------------
 
-function get_papers_by_author($num)
-{
-   // query database for a proceeding
-   $conn = db_connect();
-   $query = "select papers.* from papers,authorlist ".
-            "where authorlist.authorid ='$num' and authorlist.authors = papers.paperid ".
-	    "order by papers.paperid";
-   $result = @mysql_query($query);
-   if (!$result) {
-     echo "get_papers_by_author: query \"$query\" failed.<br>\n";
-     echo mysql_errno().": ".mysql_error()."<br>\n";
-     return false;
-   }
-   $num = @mysql_num_rows($result);
-   if ($num == 0)
-      return false;
-   $result = db_result_to_array($result);
-   return $result;
+function get_papers_by_author($num) {
+  // query database for a proceeding
+  $conn = db_connect();
+  $query = "select papers.* from papers,authorlist " .
+    "where authorlist.authorid ='$num' and authorlist.authors = papers.paperid " .
+    "order by papers.paperid";
+  $result = @mysql_query($query);
+  if (!$result) {
+    echo "get_papers_by_author: query \"$query\" failed.<br>\n";
+    echo mysql_errno() . ": " . mysql_error() . "<br>\n";
+    return FALSE;
+  }
+  $num = @mysql_num_rows($result);
+  if ($num == 0) {
+    return FALSE;
+  }
+  $result = db_result_to_array($result);
+  return $result;
 }
 
 //--------------------------------------------------------------------------------------
@@ -472,24 +460,24 @@ function get_papers_by_author($num)
 //
 //--------------------------------------------------------------------------------------
 
-function get_proceedings_by_editor($num)
-{
-   // query database for a proceeding
-   $conn = db_connect();
-   $query = "select proceedings.* from proceedings,editorlist ".
-            "where editorlist.editorid =".sqlvalue($num,"N")." and editorlist.editors = proceedings.proceedingid ".
-            "order by proceedings.proceedingid";
-   $result = @mysql_query($query);
-   if (!$result) {
-     echo "get_proceedings_by_editor: query \"$query\" failed.<br>\n";
-     echo mysql_errno().": ".mysql_error()."<br>\n";
-     return false;
-   }
-   $num = @mysql_num_rows($result);
-   if ($num == 0)
-      return false;
-   $result = db_result_to_array($result);
-   return $result;
+function get_proceedings_by_editor($num) {
+  // query database for a proceeding
+  $conn = db_connect();
+  $query = "select proceedings.* from proceedings,editorlist " .
+    "where editorlist.editorid =" . sqlvalue($num, "N") . " and editorlist.editors = proceedings.proceedingid " .
+    "order by proceedings.proceedingid";
+  $result = @mysql_query($query);
+  if (!$result) {
+    echo "get_proceedings_by_editor: query \"$query\" failed.<br>\n";
+    echo mysql_errno() . ": " . mysql_error() . "<br>\n";
+    return FALSE;
+  }
+  $num = @mysql_num_rows($result);
+  if ($num == 0) {
+    return FALSE;
+  }
+  $result = db_result_to_array($result);
+  return $result;
 }
 
 //--------------------------------------------------------------------------------------
@@ -500,21 +488,21 @@ function get_proceedings_by_editor($num)
 //
 //--------------------------------------------------------------------------------------
 
-function get_papers_by_proceedingid($num)
-{
-   $conn = db_connect();
-   $query = "select papers.* from papers,paperlist where ".
-            "paperlist.proceedingid =".sqlvalue($num,"N")." and paperlist.paperid = papers.paperid order by paperlist.firstpage";
-   $result = @mysql_query($query);
-   if (!$result) {
-     echo "get_papers_by_proceedingid: query \"$query\" failed.<br>\n";
-     return false;
-   }
-   $num = @mysql_num_rows($result);
-   if ($num == 0)
-      return false;
-   $result = db_result_to_array($result);
-   return $result;
+function get_papers_by_proceedingid($num) {
+  $conn = db_connect();
+  $query = "select papers.* from papers,paperlist where " .
+    "paperlist.proceedingid =" . sqlvalue($num, "N") . " and paperlist.paperid = papers.paperid order by paperlist.firstpage";
+  $result = @mysql_query($query);
+  if (!$result) {
+    echo "get_papers_by_proceedingid: query \"$query\" failed.<br>\n";
+    return FALSE;
+  }
+  $num = @mysql_num_rows($result);
+  if ($num == 0) {
+    return FALSE;
+  }
+  $result = db_result_to_array($result);
+  return $result;
 }
 
 //--------------------------------------------------------------------------------------
@@ -525,39 +513,39 @@ function get_papers_by_proceedingid($num)
 //
 //--------------------------------------------------------------------------------------
 
-function get_papers_and_proceedings($so)
-{
-   $conn = db_connect();
+function get_papers_and_proceedings($so) {
+  $conn = db_connect();
 
-   // validate the sort order value and define the field name.
-   $sortfield['Title'] = "papertitle";
-   $sortfield['Date'] = "pubyear";
-   $sortfield['Proceeding'] = "proctitle";
-   $sortfield['Pages'] = "pages";
-   if (!isset ($sortfield[$so])) {
-     return false;
-   }
-   $fn = $sortfield[$so];
+  // validate the sort order value and define the field name.
+  $sortfield['Title'] = "papertitle";
+  $sortfield['Date'] = "pubyear";
+  $sortfield['Proceeding'] = "proctitle";
+  $sortfield['Pages'] = "pages";
+  if (!isset ($sortfield[$so])) {
+    return FALSE;
+  }
+  $fn = $sortfield[$so];
 
-   // create a list that we can then sort nicely.
-   $query = 
-            "select papers.paperid, GREATEST(paperlist.lastpage - paperlist.firstpage + 1, 1) as pages, ".
-	    "papers.title as 'papertitle', proceedings.title as 'proctitle', proceedings.pubyear ".
-            "from papers, paperlist, proceedings ".
-            "where paperlist.paperid =papers.paperid and proceedings.proceedingid = paperlist.proceedingid ".
-            "order by $fn";
-   $result = @mysql_query($query);
-   if (!$result) {
-      echo "get_papers_and_proceedings: query \"$query\" failed.<br>\n";
-      echo mysql_errno().": ".mysql_error()."<br>";
-      return false;
-   }
+  // create a list that we can then sort nicely.
+  $query =
+    "select papers.paperid, GREATEST(paperlist.lastpage - paperlist.firstpage + 1, 1) as pages, " .
+    "papers.title as 'papertitle', proceedings.title as 'proctitle', proceedings.pubyear " .
+    "from papers, paperlist, proceedings " .
+    "where paperlist.paperid =papers.paperid and proceedings.proceedingid = paperlist.proceedingid " .
+    "order by $fn";
+  $result = @mysql_query($query);
+  if (!$result) {
+    echo "get_papers_and_proceedings: query \"$query\" failed.<br>\n";
+    echo mysql_errno() . ": " . mysql_error() . "<br>";
+    return FALSE;
+  }
 
-   $num = @mysql_num_rows($result);
-   if ($num == 0)
-      return false;
-   $result = db_result_to_array($result);
-   return $result;
+  $num = @mysql_num_rows($result);
+  if ($num == 0) {
+    return FALSE;
+  }
+  $result = db_result_to_array($result);
+  return $result;
 }
 
 //--------------------------------------------------------------------------------------
@@ -567,22 +555,22 @@ function get_papers_and_proceedings($so)
 //
 //--------------------------------------------------------------------------------------
 
-function get_proceedings_by_paperid($num)
-{
-   // query database for a proceeding
-   $conn = db_connect();
-   $query = "select proceedings.* from proceedings, paperlist where ".
-            "paperlist.paperid =".sqlvalue($num,"N")." and paperlist.proceedingid = proceedings.proceedingid ";
-   $result = @mysql_query($query);
-   if (!$result) {
-     echo "get_proceedings_by_paperid: query \"$query\" failed.<br>\n";
-     return false;
-   }
-   $num = @mysql_num_rows($result);
-   if ($num == 0)
-      return false;
-   $result = db_result_to_array($result);
-   return $result;
+function get_proceedings_by_paperid($num) {
+  // query database for a proceeding
+  $conn = db_connect();
+  $query = "select proceedings.* from proceedings, paperlist where " .
+    "paperlist.paperid =" . sqlvalue($num, "N") . " and paperlist.proceedingid = proceedings.proceedingid ";
+  $result = @mysql_query($query);
+  if (!$result) {
+    echo "get_proceedings_by_paperid: query \"$query\" failed.<br>\n";
+    return FALSE;
+  }
+  $num = @mysql_num_rows($result);
+  if ($num == 0) {
+    return FALSE;
+  }
+  $result = db_result_to_array($result);
+  return $result;
 }
 
 //--------------------------------------------------------------------------------------
@@ -592,22 +580,22 @@ function get_proceedings_by_paperid($num)
 //
 //--------------------------------------------------------------------------------------
 
-function get_paperinfo_by_paperid_and_procid($paid, $prid)
-{
-   // query database for a proceeding
-   $conn = db_connect();
-   $query = "select firstpage,lastpage from paperlist ".
-            "where paperid=".sqlvalue($paid,"N")." and proceedingid=".sqlvalue($prid,"N")." order by firstpage";
-   $result = @mysql_query($query);
-   if (!$result) {
-     echo "get_paperinfo_by_paperid_and_procid: query \"$query\" failed.<br>\n";
-     return false;
-   }
-   $num = @mysql_num_rows($result);
-   if ($num != 1)
-      return false;
-   $result = @mysql_fetch_array($result);
-   return $result;
+function get_paperinfo_by_paperid_and_procid($paid, $prid) {
+  // query database for a proceeding
+  $conn = db_connect();
+  $query = "select firstpage,lastpage from paperlist " .
+    "where paperid=" . sqlvalue($paid, "N") . " and proceedingid=" . sqlvalue($prid, "N") . " order by firstpage";
+  $result = @mysql_query($query);
+  if (!$result) {
+    echo "get_paperinfo_by_paperid_and_procid: query \"$query\" failed.<br>\n";
+    return FALSE;
+  }
+  $num = @mysql_num_rows($result);
+  if ($num != 1) {
+    return FALSE;
+  }
+  $result = @mysql_fetch_array($result);
+  return $result;
 }
 
 //--------------------------------------------------------------------------------------
@@ -617,21 +605,21 @@ function get_paperinfo_by_paperid_and_procid($paid, $prid)
 //
 //--------------------------------------------------------------------------------------
 
-function get_publishers()
-{
-   // query database for a list of categories
-   $conn = db_connect();
-   $query = "select name, city, publisherid from publisherinfo order by name";
-   $result = @mysql_query($query);
-   if (!$result) {
-     echo "get_publishers: query \"$query\" failed.<br>\n";
-     return false;
-   }
-   $num = @mysql_num_rows($result);
-   if ($num == 0)
-      return false;
-   $result = db_result_to_array($result);
-   return $result;
+function get_publishers() {
+  // query database for a list of categories
+  $conn = db_connect();
+  $query = "select name, city, publisherid from publisherinfo order by name";
+  $result = @mysql_query($query);
+  if (!$result) {
+    echo "get_publishers: query \"$query\" failed.<br>\n";
+    return FALSE;
+  }
+  $num = @mysql_num_rows($result);
+  if ($num == 0) {
+    return FALSE;
+  }
+  $result = db_result_to_array($result);
+  return $result;
 }
 
 //--------------------------------------------------------------------------------------
@@ -641,21 +629,21 @@ function get_publishers()
 //
 //--------------------------------------------------------------------------------------
 
-function get_authors_by_paperid($paperid)
-{
-   // query database for a list of categories
-   $conn = db_connect();
-   $query = "select authorid from authorlist where authors='$paperid' order by ordering";
-   $result = @mysql_query($query);
-   if (!$result) {
-     echo "get_authors: query \"$query\" failed.<br>\n";
-     return false;
-   }
-   $num = @mysql_num_rows($result);
-   if ($num ==0)
-      return false;
-   $result = db_result_to_array($result);
-   return $result;
+function get_authors_by_paperid($paperid) {
+  // query database for a list of categories
+  $conn = db_connect();
+  $query = "select authorid from authorlist where authors='$paperid' order by ordering";
+  $result = @mysql_query($query);
+  if (!$result) {
+    echo "get_authors: query \"$query\" failed.<br>\n";
+    return FALSE;
+  }
+  $num = @mysql_num_rows($result);
+  if ($num == 0) {
+    return FALSE;
+  }
+  $result = db_result_to_array($result);
+  return $result;
 }
 
 //--------------------------------------------------------------------------------------
@@ -665,21 +653,21 @@ function get_authors_by_paperid($paperid)
 //
 //--------------------------------------------------------------------------------------
 
-function get_comments_by_paper($paperid)
-{
-   // query database for a list of categories
-   $conn = db_connect();
-   $query = "select * from comments where paperid='$paperid' order by created,commentid desc";
-   $result = @mysql_query($query);
-   if (!$result) {
-     echo "get_comments: query \"$query\" failed.<br>\n";
-     return false;
-   }
-   $num = @mysql_num_rows($result);
-   if ($num ==0)
-      return false;
-   $result = db_result_to_array($result);
-   return $result;
+function get_comments_by_paper($paperid) {
+  // query database for a list of categories
+  $conn = db_connect();
+  $query = "select * from comments where paperid='$paperid' order by created,commentid desc";
+  $result = @mysql_query($query);
+  if (!$result) {
+    echo "get_comments: query \"$query\" failed.<br>\n";
+    return FALSE;
+  }
+  $num = @mysql_num_rows($result);
+  if ($num == 0) {
+    return FALSE;
+  }
+  $result = db_result_to_array($result);
+  return $result;
 }
 
 //--------------------------------------------------------------------------------------
@@ -689,21 +677,21 @@ function get_comments_by_paper($paperid)
 //
 //--------------------------------------------------------------------------------------
 
-function get_organisations()
-{
-   // query database for a list of categories
-   $conn = db_connect();
-   $query = "select name, orgid, city from organisations order by name";
-   $result = @mysql_query($query);
-   if (!$result) {
-     echo "get_organisations: query \"$query\" failed.<br>\n";
-     return false;
-   }
-   $num = @mysql_num_rows($result);
-   if ($num ==0)
-      return false;
-   $result = db_result_to_array($result);
-   return $result;
+function get_organisations() {
+  // query database for a list of categories
+  $conn = db_connect();
+  $query = "select name, orgid, city from organisations order by name";
+  $result = @mysql_query($query);
+  if (!$result) {
+    echo "get_organisations: query \"$query\" failed.<br>\n";
+    return FALSE;
+  }
+  $num = @mysql_num_rows($result);
+  if ($num == 0) {
+    return FALSE;
+  }
+  $result = db_result_to_array($result);
+  return $result;
 }
 
 //--------------------------------------------------------------------------------------
@@ -713,21 +701,22 @@ function get_organisations()
 //
 //--------------------------------------------------------------------------------------
 
-function get_publisher_name($pubid)
-{
-   // query database for the name for a publisher id, return e.g. "IOS Press, Amsterdam"
-   $conn = db_connect();
-   $query = "select name, city from publisherinfo where publisherid = '$pubid'";
-   $result = @mysql_query($query);
-   if (!$result)
-     return false;
-   $num = @mysql_num_rows($result);
-   if ($num != 1)
-      return false;
-   $str = mysql_result($result, 0, "name");
-   $str .= ", ";
-   $str .= mysql_result($result, 0, "city");
-   return $str;
+function get_publisher_name($pubid) {
+  // query database for the name for a publisher id, return e.g. "IOS Press, Amsterdam"
+  $conn = db_connect();
+  $query = "select name, city from publisherinfo where publisherid = '$pubid'";
+  $result = @mysql_query($query);
+  if (!$result) {
+    return FALSE;
+  }
+  $num = @mysql_num_rows($result);
+  if ($num != 1) {
+    return FALSE;
+  }
+  $str = mysql_result($result, 0, "name");
+  $str .= ", ";
+  $str .= mysql_result($result, 0, "city");
+  return $str;
 }
 
 //--------------------------------------------------------------------------------------
@@ -737,19 +726,20 @@ function get_publisher_name($pubid)
 //
 //--------------------------------------------------------------------------------------
 
-function get_proceed_details($procid)
-{
-   // query database for the name for an id, return array of details.
-   $conn = db_connect();
-   $query = "select * from publisherinfo where proceedingid = '$procid'";
-   $result = @mysql_query($query);
-   if (!$result)
-     return false;
-   $num = @mysql_num_rows($result);
-   if ($num != 1)
-      return false;
-   $result = db_result_to_array($result);
-   return $result;
+function get_proceed_details($procid) {
+  // query database for the name for an id, return array of details.
+  $conn = db_connect();
+  $query = "select * from publisherinfo where proceedingid = '$procid'";
+  $result = @mysql_query($query);
+  if (!$result) {
+    return FALSE;
+  }
+  $num = @mysql_num_rows($result);
+  if ($num != 1) {
+    return FALSE;
+  }
+  $result = db_result_to_array($result);
+  return $result;
 }
 
 //--------------------------------------------------------------------------------------
@@ -759,18 +749,19 @@ function get_proceed_details($procid)
 //
 //--------------------------------------------------------------------------------------
 
-function get_people()
-{
-   $conn = db_connect();
-   $query = "select title,firstname,lastname,personid from people order by lastname";
-   $result = @mysql_query($query);
-   if (!$result)
-     return false;
-   $num = @mysql_num_rows($result);
-   if ($num ==0)
-      return false;
-   $result = db_result_to_array($result);
-   return $result;
+function get_people() {
+  $conn = db_connect();
+  $query = "select title,firstname,lastname,personid from people order by lastname";
+  $result = @mysql_query($query);
+  if (!$result) {
+    return FALSE;
+  }
+  $num = @mysql_num_rows($result);
+  if ($num == 0) {
+    return FALSE;
+  }
+  $result = db_result_to_array($result);
+  return $result;
 }
 
 //--------------------------------------------------------------------------------------
@@ -780,25 +771,28 @@ function get_people()
 //
 //--------------------------------------------------------------------------------------
 
-function get_person_name($persid)
-{
-   $conn = db_connect();
-   $query = "select title,firstname,lastname from people where personid = '$persid'";
-   $result = @mysql_query($query);
-   if (!$result)
-     return false;
-   $num = @mysql_num_rows($result);
-   if ($num != 1)
-      return false;
-   $name = mysql_result($result, 0, "title");
-   if ($name != "")
-     $name .= " ";
-   $fname = mysql_result($result, 0, "firstname");
-   if ($fname != "")
-     $name .= $fname." ";
-   $lname = mysql_result($result, 0, "lastname");
-     $name .= $lname;
-   return $name;
+function get_person_name($persid) {
+  $conn = db_connect();
+  $query = "select title,firstname,lastname from people where personid = '$persid'";
+  $result = @mysql_query($query);
+  if (!$result) {
+    return FALSE;
+  }
+  $num = @mysql_num_rows($result);
+  if ($num != 1) {
+    return FALSE;
+  }
+  $name = mysql_result($result, 0, "title");
+  if ($name != "") {
+    $name .= " ";
+  }
+  $fname = mysql_result($result, 0, "firstname");
+  if ($fname != "") {
+    $name .= $fname . " ";
+  }
+  $lname = mysql_result($result, 0, "lastname");
+  $name .= $lname;
+  return $name;
 }
 
 //--------------------------------------------------------------------------------------
@@ -808,20 +802,20 @@ function get_person_name($persid)
 //
 //--------------------------------------------------------------------------------------
 
-function get_person($persid)
-{
-   $conn = db_connect();
-   $query = "select * from people where personid = '$persid'";
-   $result = @mysql_query($query);
-   if (!$result)
-     return false;
-   $num = @mysql_num_rows($result);
-   if ($num != 1) {
-      echo "get_person: more than one person matched query $query.<br>\n";
-      return false;
-   }
-   $result = @mysql_fetch_array($result);
-   return $result;
+function get_person($persid) {
+  $conn = db_connect();
+  $query = "select * from people where personid = '$persid'";
+  $result = @mysql_query($query);
+  if (!$result) {
+    return FALSE;
+  }
+  $num = @mysql_num_rows($result);
+  if ($num != 1) {
+    echo "get_person: more than one person matched query $query.<br>\n";
+    return FALSE;
+  }
+  $result = @mysql_fetch_array($result);
+  return $result;
 }
 
 
@@ -832,26 +826,26 @@ function get_person($persid)
 //
 //--------------------------------------------------------------------------------------
 
-function get_paper($num)
-{
-   // query database for the paper with given id
-   if (!$num || $num=="")
-     return false;
+function get_paper($num) {
+  // query database for the paper with given id
+  if (!$num || $num == "") {
+    return FALSE;
+  }
 
-   $conn = db_connect();
-   $query = "select * from papers where paperid ='".$num."'";
-   $result = @mysql_query($query);
-   if (!$result) {
-      echo "get_paper: query \"$query\" failed.<br>\n";
-      return false;
-   }
-   $num = @mysql_num_rows($result);
-   if ($num != 1) {
-      echo "get_paper: more than one paper matched query $query.<br>\n";
-      return false;
-   }
-   $result = @mysql_fetch_array($result);
-   return $result;
+  $conn = db_connect();
+  $query = "select * from papers where paperid ='" . $num . "'";
+  $result = @mysql_query($query);
+  if (!$result) {
+    echo "get_paper: query \"$query\" failed.<br>\n";
+    return FALSE;
+  }
+  $num = @mysql_num_rows($result);
+  if ($num != 1) {
+    echo "get_paper: more than one paper matched query $query.<br>\n";
+    return FALSE;
+  }
+  $result = @mysql_fetch_array($result);
+  return $result;
 }
 
 //--------------------------------------------------------------------------------------
@@ -861,33 +855,33 @@ function get_paper($num)
 //
 //--------------------------------------------------------------------------------------
 
-function get_papers($sortorder)
-{
-    if ($sortorder == "i" or $sortorder == "t" or $sortorder == "d") {
-        
-        $order["i"] = "paperid";
-        $order["t"] = "title";
-        $order["d"] = "date";
-        
-        $conn = db_connect();
-   
-        $query = "select * from papers order by ".$order[$sortorder];
+function get_papers($sortorder) {
+  if ($sortorder == "i" or $sortorder == "t" or $sortorder == "d") {
 
-        $result = @mysql_query($query);
-        if (!$result) {
-            echo "get_papers: query \"$query\" failed.<br>\n";
-            return false;
-        }
-        $num = @mysql_num_rows($result);
-        if ($num == 0) {
-            echo "get_papers: no papers matched query $query.<br>\n";
-            return false;
-        }
-        $result = db_result_to_array($result);
-	return $result;
+    $order["i"] = "paperid";
+    $order["t"] = "title";
+    $order["d"] = "date";
+
+    $conn = db_connect();
+
+    $query = "select * from papers order by " . $order[$sortorder];
+
+    $result = @mysql_query($query);
+    if (!$result) {
+      echo "get_papers: query \"$query\" failed.<br>\n";
+      return FALSE;
     }
-    else
-	return false;
+    $num = @mysql_num_rows($result);
+    if ($num == 0) {
+      echo "get_papers: no papers matched query $query.<br>\n";
+      return FALSE;
+    }
+    $result = db_result_to_array($result);
+    return $result;
+  }
+  else {
+    return FALSE;
+  }
 }
 
 //--------------------------------------------------------------------------------------
@@ -898,19 +892,19 @@ function get_papers($sortorder)
 //
 //--------------------------------------------------------------------------------------
 
-function update_paperfile_count($num)
-{
-   if (!$num || $num=="")
-     return false;
+function update_paperfile_count($num) {
+  if (!$num || $num == "") {
+    return FALSE;
+  }
 
-   $conn = db_connect();
-   $query = "update paperfile set accessed = NOW(), accesses = accesses + 1 where fileid ='".$num."'";
-   $result = @mysql_query($query);
-   if (!$result) {
-      echo "get_paper: query \"$query\" failed.<br>\n";
-      return false;
-   }
-   return true;
+  $conn = db_connect();
+  $query = "update paperfile set accessed = NOW(), accesses = accesses + 1 where fileid ='" . $num . "'";
+  $result = @mysql_query($query);
+  if (!$result) {
+    echo "get_paper: query \"$query\" failed.<br>\n";
+    return FALSE;
+  }
+  return TRUE;
 }
 
 //--------------------------------------------------------------------------------------
@@ -921,19 +915,19 @@ function update_paperfile_count($num)
 //
 //--------------------------------------------------------------------------------------
 
-function update_accessed($table, $keyfield, $num)
-{
-   if (!$num || $num=="")
-     return false;
+function update_accessed($table, $keyfield, $num) {
+  if (!$num || $num == "") {
+    return FALSE;
+  }
 
-   $conn = db_connect();
-   $query = "update $table set accessed = NOW(), accesses = accesses + 1 where $keyfield ='".$num."'";
-   $result = @mysql_query($query);
-   if (!$result) {
-      echo "get_paper: query \"$query\" failed.<br>\n";
-      return false;
-   }
-   return true;
+  $conn = db_connect();
+  $query = "update $table set accessed = NOW(), accesses = accesses + 1 where $keyfield ='" . $num . "'";
+  $result = @mysql_query($query);
+  if (!$result) {
+    echo "get_paper: query \"$query\" failed.<br>\n";
+    return FALSE;
+  }
+  return TRUE;
 }
 
 //--------------------------------------------------------------------------------------
@@ -944,39 +938,35 @@ function update_accessed($table, $keyfield, $num)
 //
 //--------------------------------------------------------------------------------------
 
-function update_modified($table, $keyfield, $num)
-{
-   if (!$num || $num=="")
-     return false;
+function update_modified($table, $keyfield, $num) {
+  if (!$num || $num == "") {
+    return FALSE;
+  }
 
-   $conn = db_connect();
-   $query = "update $table set modified = NOW() where $keyfield ='".$num."'";
-   $result = @mysql_query($query);
-   if (!$result) {
-      return false;
-   }
-   return true;
+  $conn = db_connect();
+  $query = "update $table set modified = NOW() where $keyfield ='" . $num . "'";
+  $result = @mysql_query($query);
+  if (!$result) {
+    return FALSE;
+  }
+  return TRUE;
 }
 
 
-function update_paper_accessed($num)
-{
-    return update_accessed("papers", "paperid", $num);
+function update_paper_accessed($num) {
+  return update_accessed("papers", "paperid", $num);
 }
 
-function update_paper_modified($num)
-{
-    return update_modified("papers", "paperid", $num);
+function update_paper_modified($num) {
+  return update_modified("papers", "paperid", $num);
 }
 
-function update_proceeding_accessed($num)
-{
-    return update_accessed("proceedings", "proceedingid", $num);
+function update_proceeding_accessed($num) {
+  return update_accessed("proceedings", "proceedingid", $num);
 }
 
-function update_proceeding_modified($num)
-{
-    return update_modified("proceedings", "proceedingid", $num);
+function update_proceeding_modified($num) {
+  return update_modified("proceedings", "proceedingid", $num);
 }
 
 
@@ -988,20 +978,20 @@ function update_proceeding_modified($num)
 //
 //--------------------------------------------------------------------------------------
 
-function get_proceeding_last_modified($num)
-{
-   if (!$num || $num=="")
-     return false;
+function get_proceeding_last_modified($num) {
+  if (!$num || $num == "") {
+    return FALSE;
+  }
 
-   $conn = db_connect();
-   $query = "select MAX(papers.modified) as lastmod from papers,paperlist ".
-   		"where paperlist.paperid = papers.paperid and paperlist.proceedingid = $num";
-   $result = @mysql_query($query);
-   if (!$result) {
-      return false;
-   }
-   $str = mysql_result($result, 0, "lastmod");
-   return $str;
+  $conn = db_connect();
+  $query = "select MAX(papers.modified) as lastmod from papers,paperlist " .
+    "where paperlist.paperid = papers.paperid and paperlist.proceedingid = $num";
+  $result = @mysql_query($query);
+  if (!$result) {
+    return FALSE;
+  }
+  $str = mysql_result($result, 0, "lastmod");
+  return $str;
 }
 
 
@@ -1013,17 +1003,13 @@ function get_proceeding_last_modified($num)
 //
 //--------------------------------------------------------------------------------------
 
-function get_allpapers_last_modified()
-{
-   $conn = db_connect();
-   $query = "select MAX(papers.modified) as lastmod from papers";
-   $result = @mysql_query($query);
-   if (!$result) {
-      return false;
-   }
-   $str = mysql_result($result, 0, "lastmod");
-   return $str;
+function get_allpapers_last_modified() {
+  $conn = db_connect();
+  $query = "select MAX(papers.modified) as lastmod from papers";
+  $result = @mysql_query($query);
+  if (!$result) {
+    return FALSE;
+  }
+  $str = mysql_result($result, 0, "lastmod");
+  return $str;
 }
-
-
-?>

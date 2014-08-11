@@ -10,7 +10,7 @@
  * $Id: misc_fns.php,v 1.8 2005/09/27 21:33:53 rivimey Exp $
  */
 
-require_once("user_auth_fns.php"); 
+require_once("user_auth_fns.php");
 
 //-------------------------------------------------------------------------
 // make_name
@@ -31,25 +31,26 @@ require_once("user_auth_fns.php");
 // 
 //-------------------------------------------------------------------------
 
-function make_name($person, $style)
-{
-   $res="";
-   if (! empty($person["title"])) {
-      $ttl = "";
-   }
-   else {
-      $ttl = $person["title"]." ";
-   }
+function make_name($person, $style) {
+  $res = "";
+  if (!empty($person["title"])) {
+    $ttl = "";
+  }
+  else {
+    $ttl = $person["title"] . " ";
+  }
 
-   if (($style & 1) == 1)
-       $res .= $ttl.$person["firstname"]." ".$person["lastname"];
-   else
-       $res .= $person["lastname"].", ".$ttl.$person["firstname"];
+  if (($style & 1) == 1) {
+    $res .= $ttl . $person["firstname"] . " " . $person["lastname"];
+  }
+  else {
+    $res .= $person["lastname"] . ", " . $ttl . $person["firstname"];
+  }
 
-   if(check_admin_user() && ($style & 2) == 0) {
-       $res .= "<a href=\"edit_person.php?f=1&amp;num=".$person['personid']."\">^</a>";
-   }
-   return $res;
+  if (check_admin_user() && ($style & 2) == 0) {
+    $res .= "<a href=\"edit_person.php?f=1&amp;num=" . $person['personid'] . "\">^</a>";
+  }
+  return $res;
 }
 
 //-------------------------------------------------------------------------
@@ -62,20 +63,19 @@ function make_name($person, $style)
 //  style is passed to make_name.
 //-------------------------------------------------------------------------
 
-function make_namelist($list, $sep, $emptymsg, $style)
-{
+function make_namelist($list, $sep, $emptymsg, $style) {
   if (is_array($list)) {
     $res = "";
     $num = count($list) - 1;
-    for($count = 0; $count <= $num; $count++) {
+    for ($count = 0; $count <= $num; $count++) {
       $res .= make_name($list[$count], $style);
-      if ($count < $num)
+      if ($count < $num) {
         $res .= $sep;
+      }
     }
   }
-  else
+  else {
     $res = $emptymsg;
-  return $res;  
+  }
+  return $res;
 }
-
-?>

@@ -13,7 +13,7 @@
 // include function files for this application
 require_once("html_output_fns.php");
 require_once("admin_fns.php");
-require_once("user_auth_fns.php"); 
+require_once("user_auth_fns.php");
 
 session_start();
 
@@ -24,28 +24,22 @@ $result_dest = session_destroy();
 // start output html
 do_html_header("Logging Out");
 
-if ($was_in)
-{
-    if ($result_unreg && $result_dest)
-    {
-            // if they were logged in and are now logged out
-        do_para("Administrator now logged out.");
-      
-        do_html_url("login.php", "Login");
-    }
-    else
-    {
-            // they were logged in and could not be logged out
-        do_para("Could not log you out.");
-    }
-}
-else
-{
-        // if they weren't logged in but came to this page somehow
-    do_para("You were not logged in, and so have not been logged out.");
+if ($was_in) {
+  if ($result_unreg && $result_dest) {
+    // if they were logged in and are now logged out
+    do_para("Administrator now logged out.");
+
     do_html_url("login.php", "Login");
+  }
+  else {
+    // they were logged in and could not be logged out
+    do_para("Could not log you out.");
+  }
+}
+else {
+  // if they weren't logged in but came to this page somehow
+  do_para("You were not logged in, and so have not been logged out.");
+  do_html_url("login.php", "Login");
 }
 
 do_html_footer();
-
-?>

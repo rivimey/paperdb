@@ -1,4 +1,4 @@
-PaperDB 0.8 Release notes 
+PaperDB 0.9 Release notes
 =========================
 
 A php/mysql application that implements a conference proceedings and papers
@@ -16,6 +16,11 @@ but probably not lots of work to make it run there.
 
 The code is released under the GNU Public License (GPL) version 2. See the
 file COPYING for more information.
+
+Paperdb-0.9
+===========
+
+This release ...
 
 Paperdb-0.8
 ===========

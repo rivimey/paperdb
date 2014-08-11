@@ -22,62 +22,63 @@ $allrefs = array();
 
 $proc_array = get_proceedings(1);
 if ($proc_array) {
-  foreach ($proc_array as $thisproc)
-  {
+  foreach ($proc_array as $thisproc) {
     $procid = $thisproc["proceedingid"];
     $paper_array = get_papers_by_proceedingid($procid);
 
     if ($paper_array) {
 
-      foreach ($paper_array as $thispaper)
-      {
-	$papid = $thispaper["paperid"];
-	if (! isset($thispaper["reftext"]) || $thispaper["reftext"] == "") {
+      foreach ($paper_array as $thispaper) {
+        $papid = $thispaper["paperid"];
+        if (!isset($thispaper["reftext"]) || $thispaper["reftext"] == "") {
           $authors_array = get_authors_by_listid($papid);
-	  $auid = "";
-	  $i = 0;
+          $auid = "";
+          $i = 0;
           foreach ($authors_array as $author) {
-	    if (++$i >2) { continue; }
-	    // $first = trim(html_entity_decode($author["firstname"]));
-	    $last = trim(html_entity_decode($author["lastname"]));
+            if (++$i > 2) {
+              continue;
+            }
+            // $first = trim(html_entity_decode($author["firstname"]));
+            $last = trim(html_entity_decode($author["lastname"]));
 
-	    // Some characters are better excluded.
-	    $last = str_replace("-","",$last);
-	    $last = str_replace("'","",$last);
+            // Some characters are better excluded.
+            $last = str_replace("-", "", $last);
+            $last = str_replace("'", "", $last);
 
-	    // Surname only:
-	    $auid .= substr($last, 0, 9);
+            // Surname only:
+            $auid .= substr($last, 0, 9);
           }
-	  // convert back to &ents; form
-	  $auid = htmlentities($auid);
+          // convert back to &ents; form
+          $auid = htmlentities($auid);
 
-	  // go to 2 digit years - this is good enough I believe.
-          $yr = substr($thisproc["pubyear"], 2, 2); 
+          // go to 2 digit years - this is good enough I believe.
+          $yr = substr($thisproc["pubyear"], 2, 2);
 
-	  // ...and this is it. Check that it hasn't been used already...
-	  $ref = $auid.$yr;
+          // ...and this is it. Check that it hasn't been used already...
+          $ref = $auid . $yr;
 
-	  if (isset($allpaps[$ref]) || isset($allpaps[$ref."a"])) {
+          if (isset($allpaps[$ref]) || isset($allpaps[$ref . "a"])) {
 
-	    if (!isset($allpaps[$ref."a"])) {
-	      # make the other reference have an 'a' and unset original.
-	      $othid=$allpaps[$ref];
-	      $allpaps[$ref."a"] = $othid;
-	      $allrefs[$othid] = $ref."a";
-	      unset($allpaps[$ref]);
-	    }
-	    
-	    # find first ref not taken
-	    for ($i = ord("b"); isset($allpaps[$ref.chr($i)]) && $i < ord("z"); $i++) { }
-	    $ref .= chr($i); 
-	  }
+            if (!isset($allpaps[$ref . "a"])) {
+              # make the other reference have an 'a' and unset original.
+              $othid = $allpaps[$ref];
+              $allpaps[$ref . "a"] = $othid;
+              $allrefs[$othid] = $ref . "a";
+              unset($allpaps[$ref]);
+            }
 
-	  $allrefs[$papid] = $ref;
-	  $allpaps[$ref] = $papid;
+            # find first ref not taken
+            for ($i = ord("b"); isset($allpaps[$ref . chr($i)]) && $i < ord("z"); $i++) {
+            }
+            $ref .= chr($i);
+          }
+
+          $allrefs[$papid] = $ref;
+          $allpaps[$ref] = $papid;
 
         }
-	else {
-	  $allrefs[$papid] = "";
+        else {
+          $allrefs[$papid] = "";
         }
       }
     }
@@ -92,24 +93,25 @@ if ($proc_array) {
 
     if ($paper_array) {
       foreach ($paper_array as $thispaper) {
-	$papid = $thispaper["paperid"];
-	if ($allrefs[$papid] != "") {
-	  echo $papid." - ".$thispaper["title"]." - ".$allrefs[$papid]."<br>\n";
-	  echo $papid." - ".$allrefs[$papid]."<br>\n";
-	  $query = "update papers set reftext = ".sqlvalue($allrefs[$papid])." where paperid = ".sqlvalue($papid,"N")."\n";
-	  if (generic_update($query)) {
-	    echo "Updated $papid with ".$allrefs[$papid]." ok.<br>\n";
-	  } else {
-	    echo "Updated $papid with ".$allrefs[$papid]." FAIL.<br>\n";
-	  }
-	}
+        $papid = $thispaper["paperid"];
+        if ($allrefs[$papid] != "") {
+          echo $papid . " - " . $thispaper["title"] . " - " . $allrefs[$papid] . "<br>\n";
+          echo $papid . " - " . $allrefs[$papid] . "<br>\n";
+          $query = "update papers set reftext = " . sqlvalue($allrefs[$papid]) . " where paperid = " . sqlvalue($papid, "N") . "\n";
+          if (generic_update($query)) {
+            echo "Updated $papid with " . $allrefs[$papid] . " ok.<br>\n";
+          }
+          else {
+            echo "Updated $papid with " . $allrefs[$papid] . " FAIL.<br>\n";
+          }
+        }
       }
     }
   }
 }
 else {
   ?>  <p> No proceedings available in database. </p>
-  <?php
+<?php
 }
 do_html_footer();
 

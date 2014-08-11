@@ -21,8 +21,8 @@ function login($username, $password)
     echo "login: query failed.<br>\n";
     return 0;
   }
-  
-  if (mysql_num_rows($result)>0) {
+
+  if (mysql_num_rows($result) > 0) {
     return 1;
   }
   else {
@@ -30,14 +30,15 @@ function login($username, $password)
   }
 }
 
-function check_admin_user()
-// see if somebody is logged in and notify them if not
+function check_admin_user() // see if somebody is logged in and notify them if not
 {
   global $admin_user;
-  if (session_is_registered("admin_user"))
-    return true;
-  else
-    return false;
+  if (session_is_registered("admin_user")) {
+    return TRUE;
+  }
+  else {
+    return FALSE;
+  }
 }
 
 function change_password($username, $old_password, $new_password)
@@ -47,21 +48,21 @@ function change_password($username, $old_password, $new_password)
   // if the old password is right 
   // change their password to new_password and return true
   // else return false
-  if (login($username, $old_password))
-  {
-    if (!($conn = db_connect()))
-      return false;
-    $result = mysql_query( "update admin 
+  if (login($username, $old_password)) {
+    if (!($conn = db_connect())) {
+      return FALSE;
+    }
+    $result = mysql_query("update admin
                             set password = password('$new_password')
                             where username = '$username'");
-    if (!$result)
-      return false;  // not changed
-    else
-      return true;  // changed successfully
+    if (!$result) {
+      return FALSE;
+    } // not changed
+    else {
+      return TRUE;
+    } // changed successfully
   }
-  else
-    return false; // old password was wrong
+  else {
+    return FALSE;
+  } // old password was wrong
 }
-
-
-?>

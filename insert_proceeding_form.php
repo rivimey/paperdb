@@ -17,17 +17,15 @@ require_once("user_auth_fns.php");
 require_once("form_output_fns.php");
 
 do_html_header("Add Proceedings");
-if (check_admin_user())
-{
+if (check_admin_user()) {
   display_proceeding_form();
 
   echo "<ul><li>";
   do_html_url("admin.php", "Back to administration menu");
   echo "</ul>";
 }
-else
-  do_para( "You are not authorized to enter the administration area.");
+else {
+  do_para("You are not authorized to enter the administration area.");
+}
 
 do_html_footer();
-
-?>

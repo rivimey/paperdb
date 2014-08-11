@@ -16,21 +16,18 @@ session_start();
 
 do_html_header("List all Editors", "none");
 
-do_para("Please select the link by the initial letter of the ".
-             "editor's surname, or All to list every editor.");
+do_para("Please select the link by the initial letter of the " .
+  "editor's surname, or All to list every editor.");
 echo "<p align=center>";
-echo "&nbsp;<a href=\"show_editor.php?f=1&amp;s=a&amp;e=z\">All</a>&nbsp;\n"; 
-echo "&nbsp;<a href=\"show_editor.php?f=1&amp;s=a&amp;e=d\">A-C</a>&nbsp;/\n"; 
-echo "&nbsp;<a href=\"show_editor.php?f=1&amp;s=d&amp;e=f\">D-F</a>&nbsp;/\n"; 
-echo "&nbsp;<a href=\"show_editor.php?f=1&amp;s=g&amp;e=i\">G-I</a>&nbsp;/\n"; 
-echo "&nbsp;<a href=\"show_editor.php?f=1&amp;s=j&amp;e=l\">J-L</a>&nbsp;/\n"; 
-echo "&nbsp;<a href=\"show_editor.php?f=1&amp;s=m&amp;e=o\">M-O</a>&nbsp;/\n"; 
-echo "&nbsp;<a href=\"show_editor.php?f=1&amp;s=p&amp;e=r\">P-R</a>&nbsp;/\n"; 
-echo "&nbsp;<a href=\"show_editor.php?f=1&amp;s=s&amp;e=u\">S-U</a>&nbsp;/\n"; 
-echo "&nbsp;<a href=\"show_editor.php?f=1&amp;s=v&amp;e=w\">V-W</a>&nbsp;/\n"; 
-echo "&nbsp;<a href=\"show_editor.php?f=1&amp;s=x&amp;e=z\">X-Z</a>&nbsp;/\n"; 
+echo "&nbsp;<a href=\"show_editor.php?f=1&amp;s=a&amp;e=z\">All</a>&nbsp;\n";
+echo "&nbsp;<a href=\"show_editor.php?f=1&amp;s=a&amp;e=d\">A-C</a>&nbsp;/\n";
+echo "&nbsp;<a href=\"show_editor.php?f=1&amp;s=d&amp;e=f\">D-F</a>&nbsp;/\n";
+echo "&nbsp;<a href=\"show_editor.php?f=1&amp;s=g&amp;e=i\">G-I</a>&nbsp;/\n";
+echo "&nbsp;<a href=\"show_editor.php?f=1&amp;s=j&amp;e=l\">J-L</a>&nbsp;/\n";
+echo "&nbsp;<a href=\"show_editor.php?f=1&amp;s=m&amp;e=o\">M-O</a>&nbsp;/\n";
+echo "&nbsp;<a href=\"show_editor.php?f=1&amp;s=p&amp;e=r\">P-R</a>&nbsp;/\n";
+echo "&nbsp;<a href=\"show_editor.php?f=1&amp;s=s&amp;e=u\">S-U</a>&nbsp;/\n";
+echo "&nbsp;<a href=\"show_editor.php?f=1&amp;s=v&amp;e=w\">V-W</a>&nbsp;/\n";
+echo "&nbsp;<a href=\"show_editor.php?f=1&amp;s=x&amp;e=z\">X-Z</a>&nbsp;/\n";
 echo "</p>";
 do_html_footer();
-
-
-?>

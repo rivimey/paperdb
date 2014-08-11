@@ -17,8 +17,7 @@ require_once("user_auth_fns.php");
 require_once("admin_fns.php");
 
 do_html_header("Adding a person");
-if (check_admin_user())
-{ 
+if (check_admin_user()) {
   $title = $_POST['title'];
   $firstname = $_POST['firstname'];
   $lastname = $_POST['lastname'];
@@ -35,12 +34,14 @@ if (check_admin_user())
 
   if (isset($lastname) && $lastname != "") {
     $num = insert_person($title, $firstname, $lastname, $address1, $address2, $address3,
- 			                  $city, $area, $country, $email, $homepage, $notes, $organisation);
-    
-    if($num == false)
+      $city, $area, $country, $email, $homepage, $notes, $organisation);
+
+    if ($num == FALSE) {
       echo "Person '$firstname $lastname' could not be added to the database.<br>";
-    else
+    }
+    else {
       echo "Person '$firstname $lastname' was added to the database with id $num.<br>";
+    }
   }
   else {
     echo "'lastname' is a required field. Please try again.<br>";
@@ -54,9 +55,8 @@ if (check_admin_user())
   do_html_url("index.php", "Back to main menu");
   echo "</ul>";
 }
-else 
-  echo "You are not authorised to view this page."; 
+else {
+  echo "You are not authorised to view this page.";
+}
 
 do_html_footer();
-
-?>

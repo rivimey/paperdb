@@ -24,19 +24,21 @@ require_once("paper_fns.php");
 //
 //-----------------------------------------------------------------------------
 
-function process_file($pos, $paperttl, $paperid, $name, $tnam, $type)
-{
+function process_file($pos, $paperttl, $paperid, $name, $tnam, $type) {
   if ($name && $type) {
     $fileid = add_paper_file($name, $tnam, "No", $type);
-    if (!$fileid)
+    if (!$fileid) {
       echo "<p>Could not add paper file $name to the database.</p>";
+    }
     else {
       echo "<p>File $name stored in database as <$fileid>.\n";
 
-      if (link_file_to_paper($paperid, $fileid))
+      if (link_file_to_paper($paperid, $fileid)) {
         echo "and linked to paper <$paperttl>.\n</p>";
-      else
+      }
+      else {
         echo "<p>Could not add paper file $name to the database.</p>";
+      }
     }
   }
   else {
@@ -53,14 +55,13 @@ if (!$num) {
   do_html_header("Add file to paper");
   do_para("No paper?");
 }
-else
-{
-  do_html_header("Add file to paper &quot;".$paper['title']."&quot;");
+else {
+  do_html_header("Add file to paper &quot;" . $paper['title'] . "&quot;");
   $name = $_FILES['filedata1']['name'];
   $tnam = $_FILES['filedata1']['tmp_name'];
   $type = $_POST['filetype1'];
   process_file("first", $paper['title'], $num, $name, $tnam, $type);
-	    
+
   $name = $_FILES['filedata2']['name'];
   $tnam = $_FILES['filedata2']['tmp_name'];
   $type = $_POST['filetype2'];
@@ -68,7 +69,7 @@ else
 }
 
 echo "<p>Links:</p><ul><li>";
-do_html_url("show_pap.php?f=1&amp;num=".$num, "To paper details.");
+do_html_url("show_pap.php?f=1&amp;num=" . $num, "To paper details.");
 echo "<li>";
 do_html_url("insert_papers_form.php", "Add another paper.");
 echo "<li>";

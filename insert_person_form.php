@@ -30,5 +30,3 @@ else
   echo "You are not authorized to enter the administration area.";
 
 do_html_footer();
-
-?>
