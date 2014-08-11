@@ -1,0 +1,90 @@
+PaperDB 0.8 Release notes 
+=========================
+
+A php/mysql application that implements a conference proceedings and papers
+database, and the tools to view and update it. Currently used on the
+www.wotug.org website to enable access to the papers presented at conferences.
+
+The design of the database is such that papers can be linked to more than
+one proceeding, and people and organizations are also recorded separately.
+There is still work to do in supporting full access to organization records,
+though.
+
+Currently running on Fedora Linux/MySQL 3.23, PHP4 and Apache 2.0, but has
+also worked with Apache 1.3 on Linux. Not tried on Windows/Apache/PHP/MySQL
+but probably not lots of work to make it run there.
+
+The code is released under the GNU Public License (GPL) version 2. See the
+file COPYING for more information.
+
+Paperdb-0.8
+===========
+
+This release provides several bugfixes to the previous (0.7) release and
+adds in several new features:
+
+    + Editing proceedings is now possible online.
+       
+    + The BibTeX and Refer facilities are now more correct in terms of character
+      coding at least, and it is possible to request a text/plain version of
+      both refer and bibtex versions of both paper and proceeding bibliographies.
+    
+    + It is now possible to delete a file from a paper using the admin interface.
+      and it is also possible to remove a paper from a proceeding.
+
+    + Add support for storing MS Powerpoint and MS Word files in the file list,
+      and made PDF the form's default format.
+
+    + Admin navigation has been enhanced in two ways:
+      
+      - person name edit links are now referenced using a hyperlinked caret; this
+        means that (albeit using unusual html) other code that uses href'd names
+        can still be accessed.
+
+      - Many of the pages now have additional links and the formatting of such
+        links has become more standardized.
+
+
+Significant bugs fixed:
+
+    + More Fixes to edit_paper code from v0.7, should be improved now.
+    
+    + The admin interface page doesn't prompt for login details after you've
+      logged in correctly.
+
+    + all strings passed into sql are passed through the escaping code, even
+      for items that seemingly couldn't be a problem.
+
+    + lots of changes to check parameters more carefully.
+
+    + no longer tries to include edit name Hrefs in BibTex or Refer output.
+
+
+Paperdb-0.75
+===========
+
+This release provides several bugfixes to the previous (0.7) release and
+adds in several new things:
+
+    + Editing papers is now possible online!
+       
+    + Links to the proceedings associated with a paper are now included on the
+       paper details page and when listing papers associated with an author.
+
+    + Several places now have improved admin facilities, e.g. you can edit papers.
+       even from the short-paper listing.
+
+Significant bugs fixed:
+
+    + Incorrect field name in the author updating and deletion code.
+
+    + Authorlist ordering is now applied consistently.
+
+    + Clean up formatting around paper -details abstracts.
+
+    + Don't display the paper title in the html page title; it's too long in many cases.
+
+    + Better html quoting of data.
+
+
+$Id: ReleaseNotes,v 1.4 2004/11/05 13:22:14 rivimey Exp $

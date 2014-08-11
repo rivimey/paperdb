@@ -1,0 +1,193 @@
+2005-09-27  Ruth Ivimey-Cook  <Ruth.Ivimey-Cook@ivimey.org>
+
+	* Major update to change parameter used from "id"
+	to "num", so that hopefully google will index the
+	pages. (it ignores params "id=").
+
+	* Fixed up an sql quoting problem.
+
+	* Made search.php more secure and increased search
+	fields it supports.
+
+2004-11-25  Ruth Ivimey-Cook  <Ruth.Ivimey-Cook@ivimey.org>
+
+	* admin_fns.php: include initialisation of new time
+	fields when inserting papers.
+
+	* home_output_fns.php: improve formatting.
+
+2004-11-25  Ruth Ivimey-Cook  <Ruth.Ivimey-Cook@ivimey.org>
+
+	* Modofied index/follow to be more permissive.
+
+2004-11-18  Ruth Ivimey-Cook  <Ruth.Ivimey-Cook@ivimey.org>
+
+	* list_proceeds.php: Implemented export to bibtex of
+	complete database. Old list_proceeds now f=1, new functions
+	are f=2...f=5
+
+	* admin_fns.php, index.php, fixup_text.php: update the
+	invocation of list_proceeds.php to include f=1
+
+	* paper_fns.php: implemented routines to get last change
+	date of a proceeding or all papers, supporting export.
+	
+	* show_proc.php: for bibtex export, indicate source of 
+	data as being paperdb.
+
+2004-11-17  Ruth Ivimey-Cook  <Ruth.Ivimey-Cook@ivimey.org>
+
+	* entities.php: ensure that { and } are quoted correctly.
+
+	* refer_output_fns.php: Fixup comma after bibtex key, and 
+	don't bracket-quote the key text. Some fixes to the escaping
+	code.
+
+2004-11-16  Ruth Ivimey-Cook  <Ruth.Ivimey-Cook@ivimey.org>
+
+	* <all>: Fixed a number of html parser errors, and
+	added html validator check image to footer of my local
+	config.php page.
+
+2004-11-15  Ruth Ivimey-Cook  <Ruth.Ivimey-Cook@ivimey.org>
+	
+	* <all>: tidied up ampersands in URLs to use &amp;
+
+	* html_output_fns.php: corrected format of DOCTYPE.
+
+	* paper_fns.php: implemented get_comment_by_paper.
+
+	* create_db.sql: additional secondary key field definitions, 
+	include accessed, modified date and use created not stored for
+	creation date.
+
+	* paper_fns.php: implement group of functions to reset
+	access and modified dates and counts.
+
+2004-11-05  Ruth Ivimey-Cook  <Ruth.Ivimey-Cook@ivimey.org>
+
+	* entities.php: Commented out backslash translation for BibTeX;
+	not sure it's really appropriate.
+
+	* refer_output_fns.php: Include new style code (+2) to indicate
+	no editor hrefs required.
+
+2004-11-03  Ruth Ivimey-Cook  <Ruth.Ivimey-Cook@ivimey.org>
+
+	* admin_fns.php: changed length of some of the comment bars. Added
+	"Fill in unset refs" command to admin menu, calling the new file
+	create_refs.php.
+
+	* admin_fns.php: added "generic_update() to pass on a preformed
+	sql update string to the database. Initially used to pass on the
+	reftext updates calculated by create_refs.php.
+
+	* entities.php: removed extra newlines after closing php tag.
+
+	* list_authors.php, list_editors.php: add header comment.
+
+	* paper_output_fns.php: Add links to new plain-text biblio ops.
+
+	* refer_output_fns.php: fix swapped-fn bug in do_refer, do_bibtex.
+	
+	* refer_output_fns.php: Only emit abstract if it's non-null. Fix
+	up some <BR>'s in plain-text funcs. 
+
+	* show_proc.php, show_pap.php: integrate code to call plain-text
+	functions.
+		
+2004-10-30  Ruth Ivimey-Cook  <Ruth.Ivimey-Cook@ivimey.org>
+
+	* refer_output_fns.php: Changed to enable output in text or in
+	html form, given help from the translation fns XML2*
+
+	* entities.php: created, including the xml funcs from the
+	html_output_fns.php
+
+	* form_output_fns.php, send_file.php, create_db.sql: add new file
+	types MS Powerpoint, MS Word.
+
+2004-10-28  Ruth Ivimey-Cook  <Ruth.Ivimey-Cook@ivimey.org>
+
+	* edit_paper.php: lots of updates to make this work!
+
+2004-10-06  Ruth Ivimey-Cook  <Ruth.Ivimey-Cook@ivimey.org>
+
+	* admin_fns.php: fix insert_paper to properly treat the proceeding
+	parameter as an array!
+
+2004-10-04  Ruth Ivimey-Cook  <Ruth.Ivimey-Cook@ivimey.org>
+
+	* admin.php: Stopped code re-requesting login details when already
+	logged in.
+
+	* admin_fns.php: create delete_paper_file. Change
+	insert_paper_file so that the file contents can't be printed with
+	an error message.
+
+	* add_file.php: move link_file_to_paper() to admin_fns.php, modify
+	some of the messages, add actions menu at end of page
+
+	* show_pap.php, show_proc.php: add new action menu to page.
+
+	* show_pap.php: add in mising require;
+
+	* paper_output_fns.php, form_output_fns.php: include / to end
+	single-element tags to start bringing the code towards XHTML
+	compatibility.
+
+2004-09-20  Ruth Ivimey-Cook  <Ruth.Ivimey-Cook@ivimey.org>
+
+	* admin_fns.php: Ensure that all sql strings are properly escaped
+	by using new function sqlvalue.
+
+	* db_fns.php: create fn sqlvalue to escape string or numeric value
+	properly.
+
+	* edit_proceeding.php: create edit proceeding functions modelled
+	on edit_paper.
+
+	* insert_papers.php: check more carefully for errors.
+
+2003-06-23  Ruth Ivimey-Cook  <Ruth.Ivimey-Cook@ivimey.org>
+
+	* add_file.php: remove unnecessary assigns from unset POST vars
+
+	* admin_fns.php: fix up inserts, deletes to authorlist; the field
+	name was incorrect
+
+	* edit_paper.php: Major edit so it is now possible to edit most
+	details of a paper through the web page, using a 2 stage form.
+
+	* form_output_fns.php: include quoting using htmlspecialchars
+	where special characters get in the way.
+
+	* home_output_fns.php: removed extra <p> around abstract
+
+	* list_papers.php: 'Pages' as the title was a bit big: use 'pp'
+	instead.
+
+	* paper_fns.php: include 'order by ordering' for accesses to
+	authorlist.
+
+	* paper_output_fns.php: display_paper_verbose() now emits an
+	'edit' URL in admin mode, and can be asked (via a bool param) to
+	display a URL to the proceedings, which is used by show_auth.php.
+	New function display_proceedings_details() which displays info
+	about a proceedings on one line (para) given proceedings & paper
+	records.
+
+	* refer_output_fns.php: include some fn. headers, add 'plain'
+	parameter to do_BibTex to help generate proper plain-text bibtext
+	files.
+
+	* show_auth.php: Test _GET'f' better, call display_paper_verbose
+	with the show-proceedings parameter, behave better on bad
+	parameter.
+
+	* show_pap.php: Test _GET'f' better, don't display paper title in
+	the page title (it's too long in most cases).
+
+	* show_proc.php: add in missing copyright-file-header. Use _GET
+	not the HTTP_GET_VARS, and test it better. be more consistent
+	about code-style.

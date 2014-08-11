@@ -1,0 +1,62 @@
+<!doctype public "-//w3c//dtd html 4.01 transitional//en" "http://www.w3.org/tr/html4/loose.dtd" />
+<-- $id -->
+<html>
+<head>
+<title>PaperDB Temporary Home Page</title>
+</head>
+<body>
+<A href="http://sourceforge.net"> <IMG src="http://sourceforge.net/sflogo.php?group_id=79891&amp;type=5" width="210" height="62" border="0" alt="SourceForge.net Logo" /></A>
+<h1><a href="http://sourceforge.net/projects/paperdb">Paper Database</a></h1>
+<p>Hi, this is the rather basic home page of the paper and proceedings
+database, paperdb.</p>
+
+<p>Paperdb is a project I've created to maintain the conference papers
+and conference proceedings information for the group I'm involved in. It
+is written in PHP4 using a MySQL Database to hold the data, and has been
+working really well so far.</p>
+
+<p>I am a long way from being an expert PHP programmer, and indeed the
+code is very simply done, so if you can help make paperdb better, do
+let me know!</p>
+
+<p>I've just released the first version to be split from the web pages,
+which I've called 0.5 in recognition of the earlier work I've put in.
+I have also been converting the scripts to use PHP without register
+globals enabled, which has been fun!</p>
+
+<p>The main content is the set of PHP files, and a guide follows:</p>
+<ul>
+<li>index.php - the "home" page.</li>
+<li>config.php - database configuration code - edit me!</li>
+<li>search.php, list_*.php - web user access routines</li>
+<li>*_output_fns.php - routines that help create web pages</li>
+<li>db_fns.php, paper_fns.php, admin_fns.php, user_auth_fns.php - routines
+ that interact closely with the database </li>
+<li>add_file.php, edit_paper.php, insert_*.php - code that the admin user
+ can use to edit the database (mot all complete)</li>
+<li>send_file.php - code to send a paper as inline content.</li>
+<li>admin.php, form_output_fns.php - admin user pages.</li>
+</ul>
+
+<p>In the tarball you will find a few non PHP files. These are:</p>
+<ul><li>bib2sql - a perl tool I used to populate the database. It
+reads a BibTeX formatted file and spits out the required database
+updates (very quickly: a couple of hundred papers a second!). To make
+it work, you will need the Perl BibTeX code from CPAN.</li>
+<li>bibcheck - a simple checking tool that uses the perl BibTeX code
+to check the incoming .bib file for errors.</li>
+<li>cpa2002.bib - an example paper from my site showing what a .bib
+file looks like.</li>
+<li>create_db.sql - the SQL script I used to create the database
+structure (using "mysql &lt;create_db.sql"). It Deletes The Old Database!!</li>
+<li>create_db_alt.sql - the result of calling "mysqldump --no-data" on
+my test database. Does not have the "create database dbname" stuff in it, so you
+will have to do a "create database dbname;" first. The script should
+create the same database as create_db.sql, but looking at it I couldn't
+be sure :-(</li>
+<li>ReleaseNotes - the release notes for this release.</li>
+<li>COPYING - the GPL License file.</li>
+</ul>
+<p>Enjoy!</p>
+</body>
+</html>

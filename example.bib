@@ -1,0 +1,36 @@
+% Example Bibliography created by Ruth Ivimey-Cook <webweaver@wotug.org>
+%
+% $Id: example.bib,v 1.1 2003/05/11 17:00:50 ruthc Exp $
+%
+
+@InProceedings{cpa2002:1,
+  title =        "Semantics of prialt in Handel-C (tm)",
+  author =       "Andrew Butterfield",
+  editor =       "James Pascoe and Peter Welch and Roger Loader and Vaidy Sunderam",
+  volume =       "",
+  series =       "Concurrent Systems Engineering",
+  year =         "2002",
+  pages =        "1--16",
+  booktitle =    "Communicating Process Architectures 2002",
+  publisher =    "IOS Press",
+  address =      "Amsterdam",
+  month =        sep,
+  abstract =     "This paper discusses the semantics of the prialt construct in Handel-C. The
+                 language is essentially a static subset of C,
+                 augmented with a parallel construct and channel communication, as found
+                 in CSP. All assignments and channel communication events take one clock
+                 cycle, with all updates synchronised with the clock edge marking the cycle
+                 end. The behaviour of prialt in Handel-C is similar in concept
+                 to that of occam, and to the p-priority concept of Adrian Lawrence's CSPP.
+                 However, we have to contend with both
+                 input and output guards in Handel-C, unlike the situation in occam,
+                 although prialts with conflicting priority requirements are not
+                 legal in Handel-C. This makes our problem simpler than the more general
+                 case including such conflicts considered by Lawrence. We start with an
+                 informal discussion of the issues that arise when considering the semantics
+                 of Handel-C's prialt construct. We define a resolution function
+                 (R) that determines which requests in a collection of prialts become active.
+                 We describe a few properties that we expect to hold for resolution, and
+                 discuss the issue of compositionality."
+}
+

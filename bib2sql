@@ -1,0 +1,491 @@
+#!/usr/bin/perl -w
+#
+# bib2sql
+#
+# Copyright (c) 2000-2003 Ruth Ivimey-Cook
+# Licensed under the GNU GPL. For full terms see the file COPYING.
+#
+# Convert BibTeX (*.bib) file to database updates as required by paperdb.
+#
+# $Id: bib2sql,v 1.1 2003/05/11 16:56:42 ruthc Exp $
+#
+
+
+use strict;
+use DBI;
+use Text::BibTeX;
+use Text::BibTeX::Name;
+use Getopt::Long;
+use HTML::Entities ();
+
+
+$Getopt::Long::ignorecase = 0;
+
+my (%months) = (
+  January => 1, February => 2, March => 3,
+  April => 4, May => 5, June => 6, July => 7,
+  August => 8, September => 9, October => 10,
+  November => 11, December => 12
+);
+
+my ($debug) = 0;
+my ($verbose) = 0;
+my ($quiet) = 0;
+my ($papercount, $proccount, $authcount) = (0,0,0);
+my ($noabs, $oops) = (0,0);
+my ($dsn) = "DBI:mysql:paperdbname:servername";
+my ($username) = "username";
+my ($password) = "password";
+my ($dbh);
+my (%attr) = ( PrintError => 1, RaiseError => 1 );
+
+sub bail_out {
+  my ($message) = shift @_;
+  die "$message\nError $DBI::err ($DBI::errstr)\n";
+}
+
+sub XML2Plain {
+  my ($str) = @_;
+
+  $str = HTML::Entities::decode($str);
+
+  return $str;
+}
+
+sub Plain2XML {
+  my ($str) = @_;
+
+  $str = HTML::Entities::encode($str);
+
+  return $str;
+}
+
+sub XML2BibTex {
+  my ($str) = @_;
+
+  # first, the latin characters
+  $str =~ s/&Oslash/\x5CO/g;
+  $str =~ s/&oslash/\x5Co/g;
+
+  $str =~ s/&([aeionAEION])tilde;/\~{$1}/g;
+  $str =~ s/&([aeiouAEIOU])circ;/\^{$1}/g;
+  $str =~ s/&([aeiouyAEIOUY])grave;/\`{$1}/g;
+  $str =~ s/&([aeiouyAEIOUY])acute;/\'{$1}/g;
+  $str =~ s/&([aeiouyAEIOUY])uml;/\"{$1}/g;
+
+  # now consider TeX constructs, esp {CSP}
+  # first, abbreviations, such as "CSP" -> Change to "{CSP}"
+  $str =~ s/([[:upper:]]+)/{$1}/g;
+  $str =~ s/"/''/go;
+  
+  return $str;
+}
+
+sub BibTeX2XML {
+  my ($multi, $str) = @_;
+
+  if (!defined($str) || $str eq "") {
+    return "";
+  }
+
+  if ($multi) {
+    $str =~ s|\n\n|</p>\n<p>|gmo;
+    $str =~ s|^|<p>|o;
+    $str =~ s|$|</p>|o;
+  }
+
+  # first, the latin characters
+  $str =~ s/{\\O}/&Oslash;/go;
+  $str =~ s/{\\o}/&oslash;/go;
+
+  $str =~ s/{\\~([aeionAEION])}/&$1tilde;/g;
+  $str =~ s/{\\\^([aeiouAEIOU])}/&$1circ;/g;
+  $str =~ s/{\\`([aeiouyAEIOUY])}/&$1grave;/g;
+  $str =~ s/{\\'([aeiouyAEIOUY])}/&$1acute;/g;
+  $str =~ s/{\\"([aeiouyAEIOUY])}/&$1uml;/g;
+
+  $str =~ s/\\~{([aeionAEION])}/&$1tilde;/g;
+  $str =~ s/\\\^{([aeiouAEIOU])}/&$1circ;/g;
+  $str =~ s/\\`{([aeiouyAEIOUY])}/&$1grave;/g;
+  $str =~ s/\\'{([aeiouyAEIOUY])}/&$1acute;/g;
+  $str =~ s/\\"{([aeiouyAEIOUY])}/&$1uml;/g;
+
+  # now consider TeX constructs
+  # first, abbreviations, such as "{CSP}" -> Change to "CSP"
+  $str =~ s/{([[:upper:]]+)}/$1/g;
+  $str =~ s/''/"/go;
+  $str =~ s/``/"/go;
+  $str =~ s/[{}]//go;
+
+  return $str;
+}
+
+sub query {
+  my ($q) = @_;
+  my ($count);
+  my (@array, $row, $sth);
+
+  print "    Query: $q\n" if ($debug);
+  $sth = $dbh->prepare($q)   or bail_out("Cannot prepare $q");
+  $sth->execute()            or bail_out("Cannot execute $q");
+
+  $count = 0;
+  while ($row = $sth->fetchrow_hashref())
+  {
+    $array[$count++] = $row;
+  }
+  $sth->finish();
+  return @array;
+}
+
+sub update {
+  my ($s) = @_;
+  my ($rows, $sth);
+
+  print "    Update: $s\n" if ($debug);
+  $rows = $dbh->do($s);
+  bailout("Update $s failed.") if (!$rows);
+  print "Warn: update $s did not affect any rows\n" if ($rows + 0 == 0);
+  return $rows +0;
+}
+
+sub parsenames {
+  my ($nm) = @_;
+  my (@list, $item, $name, $nmx);
+  my ($i, $firstname, $lastname);
+  my ($firstname_d, $lastname_d);
+  my (@result, @ids, $idc);
+
+  $nmx = BibTeX2XML(0, $nm);
+  print "Parsenames on $nm ($nmx -> ".XML2Plain($nmx).")\n" if ($debug);
+
+  @list = Text::BibTeX::split_list($nmx, "and");
+
+  $idc = 0;
+  foreach $item (@list)
+  {
+    my $name = new Text::BibTeX::Name;
+    $name->split($item);
+
+    $firstname = join(" ", $name->part("first"), $name->part("von") );
+    $firstname_d = $dbh->quote($firstname);
+    $lastname = join(" ", $name->part("last"), $name->part("jr") );
+    $lastname_d = $dbh->quote($lastname);
+
+    @result = query("select personid from people where firstname = $firstname_d and lastname = $lastname_d");
+    if (scalar @result == 0)
+    {
+      my (@first, $initials, $initials_d);
+
+      @first = $name->part("first");
+      $initials = "";
+      foreach $i (@first)
+      {
+	$initials .= substr($i,0,1).". ";
+      }
+      $initials_d = $dbh->quote($initials);
+      @result = query(qq{ select personid from people where
+			  ((locate(firstname, $initials_d, 0) = 1) or
+			   (locate($initials_d, firstname, 0) = 1))
+			  and lastname = $lastname_d });
+      if (scalar @result == 0)
+      {
+        update("insert into people set firstname = $firstname_d, lastname = $lastname_d, lastverified = curdate()");
+	@result = query("select last_insert_id()");
+	$i = $result[0]->{"last_insert_id()"};
+	$ids[$idc++] = $i;
+	$authcount++;
+	print "   new person: $firstname $lastname ($i).\n" if ($verbose);
+      }
+      elsif (scalar @result == 1)
+      {
+        $i = $result[0]->{"personid"};
+        print "   use person: $firstname $lastname ($i).\n" if ($verbose);
+	$ids[$idc++] = $i;
+      }
+      elsif (scalar @result > 1)
+      {
+	$i = $result[0]->{"personid"};
+	print "Oops... seem to have multiple people matching: $firstname $lastname, selected $i\n";
+	$oops++;
+	$ids[$idc++] = $i;
+      }
+    }
+    elsif (scalar @result == 1)
+    {
+      $i = $result[0]->{"personid"};
+      print "   use person: $firstname $lastname ($i).\n" if ($verbose);
+      $ids[$idc++] = $i;
+    }
+    elsif (scalar @result > 1)
+    {
+      $i = $result[0]->{"personid"};
+      print "Oops... seem to have multiple people matching: $firstname $lastname, selected $i\n";
+      $oops++;
+      $ids[$idc++] = $i;
+    }
+  }
+  return @ids;
+}
+
+
+GetOptions("quiet|q" => \$quiet, "debug|d" => \$debug, "verbose|v!" => \$verbose);
+
+$dbh = DBI->connect($dsn, $username, $password, \%attr) or bailout("Cannot connect to $dsn");
+
+foreach my $bibname (@ARGV)
+{
+  my ($entry);
+  my ($bibfile);
+
+  $bibfile = new Text::BibTeX::File $bibname;
+  $bibfile->set_structure ('Bib');
+  print "Opened $bibname\n";
+  while ($entry = new Text::BibTeX::Entry $bibfile)
+  {
+    my (@result);
+    my ($paperid,$procid,$pubid,$firstpg,$lastpg);		# record numbers, etc
+    my ($paperid_d);
+    my ($url,$ttl,$author,$editor,$series,$volume,$isbn,$year,$month);
+    my ($bookttl,$pubname,$addr,$pages);			# bibtex record values
+    my ($url_d,$ttl_d,$author_d,$editor_d,$series_d,$isbn_d,$year_d,$month_d);
+    my ($volume_d,$bookttl_d,$pubname_d,$addr_d,$pages_d);	# DBI record values
+
+    my (@editors,@authors);
+
+    if ( ! $entry->parse_ok) {
+      $oops++;
+    }
+    next unless $entry->parse_ok;
+    if ($entry->metatype() ==  Text::BibTeX::BTE_REGULAR)
+    {
+      $ttl = $entry->get("title");
+      $ttl = BibTeX2XML(0, $ttl);
+      $ttl_d = $dbh->quote($ttl);
+
+      $addr = $entry->get("address");
+      if (defined $addr && $addr ne "") {
+	$addr = BibTeX2XML(0, $addr);
+      } else {
+	$addr = "";
+      }
+      $addr_d = $dbh->quote($addr);
+
+      $pubname = $entry->get("publisher");
+      $pubname = BibTeX2XML(0, $pubname);
+      $pubname_d = $dbh->quote($pubname);
+
+      $bookttl = $entry->get("booktitle");
+      $bookttl = BibTeX2XML(0, $bookttl);
+      $bookttl_d = $dbh->quote($bookttl);
+
+      print "Paper: $ttl\n" if (not $quiet);
+
+      # First, see if there is a proceedings record
+      #
+      @result = query("select proceedingid,volume from proceedings where title = $bookttl_d");
+      if (scalar @result == 0)  
+      {
+	# We must create proceeding entry for this paper.
+	# See if there is a publisher record for it
+	#
+	print "   have no proceedings matching $bookttl\n" if ($verbose);
+	@result = query("select publisherid from publisherinfo where name = $pubname_d");
+	if (scalar @result == 0)
+	{
+	  # No publisher either, so create one
+	  #
+	  print "Have no publisher matching $pubname\n" if ($verbose);
+	  update("insert into publisherinfo set name = $pubname_d, city = $addr_d");
+	  @result = query("select last_insert_id()");
+	  $pubid = $result[0]->{"last_insert_id()"};
+	  print "   new publisher: $pubname ($pubid).\n" if ($verbose);
+	}
+        else
+        {
+          $pubid = $result[0]->{"publisherid"};
+          print "   use publisher: $pubname ($pubid).\n" if ($verbose);
+        }
+
+	# Now we have a publisher id, start creating a new proceedings record
+	#
+	$series = $entry->get("series");
+	if (defined $series && $series ne "") {
+	  $series = BibTeX2XML(0, $series);
+	} else {
+	  $series = "";
+	}
+	$series_d = $dbh->quote($series);
+
+	$isbn = $entry->get("isbn");
+	if (defined $isbn && $isbn ne "") {
+	  $isbn = BibTeX2XML(0, $isbn);
+	} else {
+	  $isbn = "";
+	}
+	$isbn_d = $dbh->quote($isbn);
+
+	$year = $entry->get("year");
+	if (defined $year && $year ne "") {
+	  $year = BibTeX2XML(0, $year);
+	} else {
+	  $year = "";
+	}
+	$year_d = $dbh->quote($year);
+
+	$month = $entry->get("month");
+	if (defined $month && $month ne "") {
+	  $month = $months{$month};
+	} else {
+	  $month = 0;
+	}
+	$month_d = $dbh->quote($month);
+
+	$volume = $entry->get("volume");
+	if (defined $volume && $volume ne "") {
+	  $volume = BibTeX2XML(0, $volume);
+	} else {
+	  $volume = "";
+	}
+	$volume_d = $dbh->quote($volume);
+
+	update("insert into proceedings set title = $bookttl_d, volume = $volume_d, series = $series_d, pubyear= $year_d, pubmonth = $month_d, isbn = $isbn_d");
+	@result = query("select last_insert_id()");
+	$procid = $result[0]->{"last_insert_id()"};
+	print "   new proceedings: $bookttl ($procid).\n" if (not $quiet);
+	$proccount++;
+
+	$editor = $entry->get("editor");
+        if (defined $editor)
+	{
+	  $editor = BibTeX2XML(0, $editor);
+	  @editors = parsenames($editor);
+
+	  my ($count) = 0;
+	  foreach my $i (@editors)
+	  {
+	    update("insert into editorlist set ordering='$count', editors=".$dbh->quote($procid).", editorid=".$dbh->quote($i));
+	    $count++;
+	  }
+	}
+	else
+	{
+	  print "   Oops: $bookttl does not define an editor... continuing.\n";
+	$oops++;
+	}
+      }
+      elsif (scalar @result > 1)
+      {
+	print "Oops... seem to have multiple proceedings matching $ttl\n";
+	$oops++;
+	print "Selecting the first .. (volume=".$result[0]->{"volume"}.")\n";
+	$procid = $result[0]->{"proceedingid"};
+      }
+      else
+      {
+        $procid = $result[0]->{"proceedingid"};
+        print "   use proceeding: $bookttl ($procid).\n" if ($verbose);
+      }
+
+      # Use the info to create a paper entry
+      #
+      $author = $entry->get("author");
+      if (!defined $author || $author eq "") {
+        $author = "{No author recorded}";
+      }
+
+      @authors = parsenames($author);
+
+      @result = query("select paperid from papers where title = $ttl_d");      
+      if (scalar @result == 0)  
+      {
+        my ($abs, $abs_d, $auth, $auth_d, $count);
+        my ($pagestr);
+
+	$url = $entry->get("url");
+	if (defined $url && $url ne "") {
+	  $url = BibTeX2XML(0, $url);
+	} else {
+	  $url = "";
+	}
+	$url_d = $dbh->quote($url);
+
+        $abs = $entry->get("abstract");
+        if (defined $abs && $abs ne "")
+        {
+	  $abs = BibTeX2XML(1, $abs);
+	  $abs_d = $dbh->quote($abs);
+	  update("insert into papers set title = $ttl_d, abstract = $abs_d");
+        }
+        else
+        {
+	  update("insert into papers set title = $ttl_d");
+        }
+
+	@result = query("select last_insert_id()");
+	$paperid = $result[0]->{"last_insert_id()"};
+	$paperid_d = $dbh->quote($paperid);
+        if (defined $url && $url ne "")
+	{
+          update("update papers set paper_url = $url_d where paperid = $paperid_d");
+	}
+	#
+        $count = 0;
+        foreach $auth (@authors)
+        {
+	  $auth = BibTeX2XML(0, $auth);
+	  $auth_d = $dbh->quote($auth);
+	  update("insert into authorlist set ordering='$count', authors=$paperid_d, authorid=$auth_d");
+          $count++;
+        }
+
+	# Link the proceeding to the paper
+	#
+	$pages = $entry->get("pages");
+        if (defined $pages && ($pages =~ /(\d\d*)-{1,2}(\d\d*)/)) 
+        {
+	  $firstpg = "$1";
+	  $lastpg = "$2";
+	  $pagestr = "pages $firstpg to $lastpg";
+	  update("insert into paperlist set proceedingid=$procid, paperid=$paperid_d, firstpage='$firstpg', lastpage='$lastpg'");
+        }
+	elsif (defined $pages && ($pages =~ /(\d\d*)/)) 
+	{
+	  $firstpg = "$1";
+	  $pagestr = "on page $firstpg";
+	  update("insert into paperlist set proceedingid=$procid, paperid=$paperid_d, firstpage='$firstpg', lastpage='$firstpg'");
+	}
+	else
+	{
+	  $pagestr = "page range not recorded";
+	  update("insert into paperlist set proceedingid=$procid, paperid=$paperid");
+	}
+        if (defined $abs && $abs ne "") {
+	  print "   new paper created ($pagestr, ". scalar @authors." authors, with abstract) ($paperid)\n" if (not $quiet);
+        }
+	else
+	{
+	  print "   new paper created ($pagestr, ". scalar @authors." authors, no abstract) ($paperid)\n" if (not $quiet);
+	  $noabs++;
+        }
+	$papercount++;
+      }
+      else
+      {
+        print "   Oops... a paper with title $ttl is already in the database, ignoring new one\n";
+	$oops++;
+      }
+    }
+    print "\n" if (not $quiet);
+    print "\n" if ($debug || $verbose);
+  }
+}
+
+print "$papercount papers with $authcount authors created in $proccount proceedings.\n";
+my $percent = ($noabs *100) /$papercount ;
+print "$percent % have abstracts.\n";
+print "$oops problems encountered.\n";
+
+$dbh->disconnect();
+exit (0);
+

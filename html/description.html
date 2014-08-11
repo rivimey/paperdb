@@ -1,0 +1,55 @@
+<!doctype public "-//w3c//dtd html 4.01 transitional//en" "http://www.w3.org/tr/html4/loose.dtd" />
+<html>
+<head>
+<title>PaperDB Home Page</title>
+</head>
+<body>
+<A href=""><IMG src="http://sourceforge.net/sflogo.php?group_id=79891&amp;type=5" width="210" height="62" border="0" alt="SourceForge.net Logo" /></A>
+<table cellspacing="2">
+<tr>
+<td valign="top">
+<table bgcolor="#f0f0f0">
+<tr><td bgcolor="#e0e0e0">Links</td></tr>
+<tr><td><a href="http://sourceforge.net/projects/paperdb">sf Project</a></tr></td>
+<tr><td><a href="http://sourceforge.net/project/showfiles.php?group_id=79891">Download</a></tr></td>
+<tr><td><a href="about.html">About</a><br /></tr></td>
+<tr><td><a href="description.html">Description</a><br /></tr></td>
+</table>
+</td>
+<td bgcolor="#f0f0f0">
+<h1>Description</h1>
+
+<p>The main content is the set of PHP files, and a guide follows:</p>
+<ul>
+<li>index.php - the "home" page.</li>
+<li>config.php - database configuration code - edit me!</li>
+<li>search.php, list_*.php - web user access routines</li>
+<li>*_output_fns.php - routines that help create web pages</li>
+<li>db_fns.php, paper_fns.php, admin_fns.php, user_auth_fns.php - routines
+ that interact closely with the database </li>
+<li>add_file.php, edit_paper.php, insert_*.php - code that the admin user
+ can use to edit the database (mot all complete)</li>
+<li>send_file.php - code to send a paper as inline content.</li>
+<li>admin.php, form_output_fns.php - admin user pages.</li>
+</ul>
+
+<p>In the tarball you will find a few non PHP files. These are:</p>
+<ul><li>bib2sql - a perl tool I used to populate the database. It
+reads a BibTeX formatted file and spits out the required database
+updates (very quickly: a couple of hundred papers a second!). To make
+it work, you will need the Perl BibTeX code from CPAN.</li>
+<li>bibcheck - a simple checking tool that uses the perl BibTeX code
+to check the incoming .bib file for errors.</li>
+<li>cpa2002.bib - an example paper from my site showing what a .bib
+file looks like.</li>
+<li>create_db.sql - the SQL script I used to create the database
+structure (using "mysql &lt;create_db.sql"). It Deletes The Old Database!!</li>
+<li>create_db_alt.sql - the result of calling "mysqldump --no-data" on
+my test database. Does not have the "create database dbname" stuff in it, so you
+will have to do a "create database dbname;" first. The script should
+create the same database as create_db.sql, but looking at it I couldn't
+be sure :-(</li>
+<li>ReleaseNotes - the release notes for this release.</li>
+<li>COPYING - the GPL License file.</li>
+</ul>
+<p>Enjoy!</p>

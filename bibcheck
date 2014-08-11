@@ -1,0 +1,51 @@
+#!/usr/bin/perl -w
+#
+# bibcheck
+#
+# Copyright (c) 2000-2003 Ruth Ivimey-Cook
+# Licensed under the GNU GPL. For full terms see the file COPYING.
+#
+# Check the syntax of *.bib files prior to adding using bib2sql
+#
+# $Id: bibcheck,v 1.1 2003/05/11 16:56:42 ruthc Exp $
+#
+
+use strict;
+use DBI;
+use Text::BibTeX;
+use Text::BibTeX::Name;
+use Getopt::Long;
+
+$Getopt::Long::ignorecase = 0;
+
+my ($debug) = 0;
+my ($verbose) = 0;
+
+
+GetOptions("debug|d" => \$debug, "verbose|v!" => \$verbose);
+
+foreach my $bibname (@ARGV)
+{
+  my ($bibfile, $entry);
+
+  $bibfile = new Text::BibTeX::File $bibname;
+  $bibfile->set_structure ('Bib');
+  print "opened $bibname\n";
+  while ($entry = new Text::BibTeX::Entry $bibfile)
+  {
+    my ($ttl);
+    my ($bookttl);
+
+    next unless $entry->parse_ok;
+    if ($entry->metatype() ==  Text::BibTeX::BTE_REGULAR)
+    {
+      $ttl = $entry->get("title");
+      $bookttl = $entry->get("booktitle");
+      print "\nPaper $ttl\n";
+    }
+  }
+}
+
+
+exit (0);
+

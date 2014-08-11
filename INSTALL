@@ -1,0 +1,173 @@
+Paperdb-0.8 Installation
+========================
+
+A php/mysql application that implements a conference proceedings and papers
+database, and the tools to view and update it. Currently used on the
+www.wotug.org website to enable access to the papers presented at conferences.
+
+The code is released under the GNU Public License (GPL) version 2. See the file
+COPYING for more information.
+
+The code consists of a number of php files, which must be be installed into a
+suitable directory on the web server as required by your website. The files must
+be under DocumentRoot.
+
+There is a config file, config.php, in the source directory that you should:
+
+  a) update to define the server names, page layout and so on.
+
+  b) copy or move to /etc/paperdb , as this is where it is read from
+
+The "home page" file is index.php. However, there is nothing particularly
+special about this and on the 'native' website for paperdb I have created some
+code on the site homepage to read a random article.
+
+
+Initialising the database
+=========================
+
+Required Software
+-----------------
+Paperdb requires a MySQL database and support within PHP to access it.
+This means that you will require the following PHP and MySQL components:
+
+	httpd			# the webserver - apache in my case.
+
+	mysql			# mysql clients and client libs
+	mysql-server		# mysql server
+        php
+	php-mysql		# mysql support for php
+
+        [ optional ]
+	perl-DBD-MySQL		# perl DBD layer support for MySQL
+	perl-Text-BiBTeX	# perl BibTeX interface 0.34
+
+The following are the versions that work successfully together on my system
+(Fedora Core Linux):
+
+	httpd-2.0.50
+	mysql-3.23.58
+	mysql-server-3.23.58
+        php-4.3.8
+        php-mysql-4.3.8
+        perl-5.8.3
+	perl-DBD-MySQL-2.9002
+        perl-Text-BibTeX 0.34
+
+You need the perl and perl-DBD support only if you are going to populate the
+database from BibTeX files.
+
+
+Installing the files
+--------------------
+
+Unpack the files into the appropriate web server directory; for example, create
+a directory paperdb in the root of your document tree and place the php files
+into it. You do not require the html directory or the INSTALL, ReleaseNotes or
+ChangeLog files; these can be deleted or moved elsewhere.
+
+A copy of the file config.php must be placed in /etc/paperdb/config.php and
+edited to match your site configuration. If you must place the config file
+elsewhere you must edit the files html_output_fns.php and db_fns.php. Note that
+by default the local config.php is not used.
+
+
+MySQL/PaperDB Configuration
+---------------------------
+
+Configure MySQL in the usual ways, making sure you create an account suitable
+for use by the webserver as well as an account you will use to administer the
+system. The webserver account needs select, insert, delete, create, and update
+privileges.
+
+With your admin account log in to mysql using your favourite tool (for example
+mysql, TOra or MySQL-Front). Create the database that paperdb will use:
+
+> create database exampledb;
+> use exampledb;
+
+You can of course use a suitable name instead of 'exampledb'.
+
+Run the SQL script create_db.sql from the source. This creates the database
+schema (the set of tables the system uses).
+
+> source create_db.sql
+
+Insert into the admin table a paperdb admin account and password:
+
+> insert into admin set username='user', password=password("mypassword");
+
+There is no php interface to this for security reasons.
+
+
+Inserting Data into the Database
+================================
+
+You might like to verify that the webserver sees the paperdb code now, but it
+will be bery unexciting as there is nothing to look at. During the code's
+development, the existing information was available as BibTeX files, so a perl
+script was created to import the files into paperdb.
+
+
+Using bib2sql
+-------------
+
+The major advantage of this is that mistakes can be rectified by deleting the
+SQL database and starting again! The disadvantage is that it is a bit prone to
+making mistakes with badly-formed bibtex input. You will probably have to tweak
+the database unless you have very 'pure' bibtex files.
+
+The BibTeX files must be well-formed, as the Perl Text::BibTeX are fairly
+particular about the values they see. For the files I had, this meant ensuring
+that the paper author line was of the form:
+
+ author = "name1 and name2 and name3 and name4"
+
+[where "nameN" could be a multiword string like "Dr John Jones"].
+
+The perl script tries to use person, proceeding etc records that exist, but only
+does this where the name it sees is the same. I didn't manage to get it to
+realize that Dr J. Jones was the same person as Dr John Jones, so in the end I
+just edited the source .bib file to make records look the same where I actually
+knew they were.
+
+
+Using the Web Interface
+-----------------------
+
+It is possible to enter proceedings and papers using the web interface. This
+works reasonably well now, although it's still in it's infancy. Note that before
+you can enter a paper, you must enter the proceedings it's in; before you can
+enter paper or proceedings you must have authors and editors in the people list.
+So the procedure is basically:
+
+ 1. Enter admin mode (invoke admin.php and enter the login/password pair). Your
+browser will probably need to have cookie support enabled.
+
+ 2. Use "Add New Person" to add at least some of the people you'll be dealing
+with. To begin with, at least the editors of the proceeding and the authors of
+the first paper you'll add.
+
+ 3. Use "Add a new organisation" to create an organisation record for the
+proceeding publishers.
+
+ 3. Use "Add a new proceeding" to create a proceeding record. This will take
+place in two stages, with a second form that summarizes the first and requests
+editor order as required.
+
+ 4. Use "Add a paper to a proceeding" to create your first paper record. This
+will take place in two stages, with a second form that summarizes the first and
+requests author order as required.
+
+
+
+$Log: INSTALL,v $
+Revision 1.2  2004/11/05 13:22:14  rivimey
+Update docs for pending v0.8
+
+Revision 1.1  2003/05/16 11:13:57  rivimey
+Update ReleaseNotes, move some to INSTALL and add more installation stuff.
+
+Revision 1.1  2003/05/11 19:42:27  ruthc
+Updated for 0.6
+
