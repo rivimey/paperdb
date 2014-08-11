@@ -85,9 +85,8 @@ function display_admin_menu()
 //
 //--------------------------------------------------------------------------------------
 
-function insert_proceeding($title, $subtitle, $pubid, $series, $editors,
-                           $isbn, $issn, $volm, $totpg, $url)
-
+function insert_proceeding($title, $subtitle, $pubid, $series, $editors, $isbn,
+                           $issn, $volm, $totpg, $url,  $pubyear, $pubmonth, $pubday)
 {
   $conn = db_connect();
 
@@ -111,7 +110,8 @@ function insert_proceeding($title, $subtitle, $pubid, $series, $editors,
 
   // insert this record;
   $query = "insert into proceedings set  title=".sqlvalue($title).", subtitle=".sqlvalue($subtitle).", publisherid=".sqlvalue($pubid, "N").", ".
-  				"series=".sqlvalue($series).", isbn=".sqlvalue($isbn).", issn=".sqlvalue($issn).", volume=".sqlvalue($volm, "N").", ".
+  				"pubyear=".sqlvalue($pubyear, "N").", pubmonth=".sqlvalue($pubmonth, "N").", pubday=".sqlvalue($pubday, "N").", ".
+				"series=".sqlvalue($series).", isbn=".sqlvalue($isbn).", issn=".sqlvalue($issn).", volume=".sqlvalue($volm, "N").", ".
 				"totpages=".sqlvalue($totpg, "N").",  proceedingurl=".sqlvalue($url);
   $result = mysql_query($query);
   if (!$result) {
@@ -365,7 +365,7 @@ function insert_author_to_paper($paperid, $authorid, $order)
   				"authorid=".sqlvalue($authorid, "N").", ordering=".sqlvalue($order, "N");
   $result = mysql_query($query);
   if (!$result) {
-    echo "insert_author: insert author failed: $query<br>\n";
+    echo "insert_author_to_paper: insert author failed: $query<br>\n";
     echo mysql_errno().": ".mysql_error()."<br>\n";
     return false;
   }
@@ -533,9 +533,11 @@ function insert_paper($procids, $title, $papers, $authors, $url, $reftext, $abst
     return false;
 
   $order = 0;
-  foreach ($authors as $auid) {
-    insert_author_to_paper($papid, $auid, $order);
-    $order++;
+  if (isset($authors)) {
+    foreach ($authors as $auid) {
+      insert_author_to_paper($papid, $auid, $order);
+      $order++;
+    }
   }
   
   foreach ($papers as $pfid) {
@@ -549,15 +551,20 @@ function insert_paper($procids, $title, $papers, $authors, $url, $reftext, $abst
     }
   }
 
-  foreach ($procids as $pid) {
-    $query = "insert into paperlist set proceedingid=".sqlvalue($pid,"N").", paperid=".sqlvalue($papid,"N");
-    //echo "insert_paper: insert $query.<br>\n";
-    $result = mysql_query($query);
-    if (!$result) {
-      echo "insert_paper: insert paperlist $query failed.<br>\n";
-      echo mysql_errno().": ".mysql_error()."<br>\n";
-      return false;
+  if (isset($procids)) {
+    foreach ($procids as $pid) {
+      $query = "insert into paperlist set proceedingid=".sqlvalue($pid,"N").", paperid=".sqlvalue($papid,"N");
+      //echo "insert_paper: insert $query.<br>\n";
+      $result = mysql_query($query);
+      if (!$result) {
+        echo "insert_paper: insert paperlist $query failed.<br>\n";
+        echo mysql_errno().": ".mysql_error()."<br>\n";
+        return false;
+      }
     }
+  }
+  else {
+    echo "Warning: paper has no proceedings associated.<br>\n";
   }
   return $papid;
 }

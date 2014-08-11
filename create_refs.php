@@ -77,8 +77,7 @@ if ($proc_array) {
 
         }
 	else {
-	  $allrefs[$papid] = $thispaper["reftext"];
-	  $allpaps[$thispaper["reftext"]] = $papid;
+	  $allrefs[$papid] = "";
         }
       }
     }
@@ -91,19 +90,22 @@ if ($proc_array) {
     $procid = $thisproc["proceedingid"];
     $paper_array = get_papers_by_proceedingid($procid);
 
-    foreach ($paper_array as $thispaper) {
-      $papid = $thispaper["paperid"];
-      //echo $papid." - ".$thispaper["title"]." - ".$allrefs[$papid]."<br>\n";
-      //echo $papid." - ".$allrefs[$papid]."<br>\n";
-      $query = "update papers set reftext = ".sqlvalue($allrefs[$papid])." where paperid = ".sqlvalue($papid,"N")."\n";
-      if (generic_update($query)) {
-        echo "Updated $papid with ".$allrefs[$papid]." ok.<br>\n";
-      } else {
-        echo "Updated $papid with ".$allrefs[$papid]." FAIL.<br>\n";
+    if ($paper_array) {
+      foreach ($paper_array as $thispaper) {
+	$papid = $thispaper["paperid"];
+	if ($allrefs[$papid] != "") {
+	  echo $papid." - ".$thispaper["title"]." - ".$allrefs[$papid]."<br>\n";
+	  echo $papid." - ".$allrefs[$papid]."<br>\n";
+	  $query = "update papers set reftext = ".sqlvalue($allrefs[$papid])." where paperid = ".sqlvalue($papid,"N")."\n";
+	  if (generic_update($query)) {
+	    echo "Updated $papid with ".$allrefs[$papid]." ok.<br>\n";
+	  } else {
+	    echo "Updated $papid with ".$allrefs[$papid]." FAIL.<br>\n";
+	  }
+	}
       }
     }
   }
-
 }
 else {
   ?>  <p> No proceedings available in database. </p>

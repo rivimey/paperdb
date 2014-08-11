@@ -14,12 +14,11 @@ function login($username, $password)
     return 0;
   }
 
-  // check if username is unique
   $result = mysql_query("select username from admin 
                          where username='$username'
                          and password = password('$password')");
   if (!$result) {
-    echo "login: query \"$query\" failed.<br>\n";
+    echo "login: query failed.<br>\n";
     return 0;
   }
   

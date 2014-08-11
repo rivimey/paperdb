@@ -120,14 +120,17 @@ function collect_paper_info($num)
         /*
          * Look for proceedings the user has added and emit form elements for them,
          */
+    do_para("Checking for new proceeding associations:");
     $done_explan = false;
     if (isset($new_procs) && is_array($old_procs)) {
+        do_para("new_procs set and old_procs is array (".count($new_procs).").");
         foreach($new_procs as $n_pr) {
             $found=false;
             foreach($old_procs as $o_pr) {
                 if ($o_pr['proceedingid'] == $n_pr)
                     $found = true;
             }
+            do_para("Looked for $n_pr in old_procs : $found.");
             if (!$found) {
                 if (!$done_explan) {
                     do_para("You have added one or more proceedings associations for this paper. ".
@@ -191,7 +194,7 @@ function collect_paper_info($num)
         echo "<tr bgcolor=\"#ffd84c\"><td>Order</td><td>Author</td></tr>\n";
         for ($i = 0; $i < $n_auths; $i++) {
             echo "<tr><td>$i</td><td>\n";
-            echo "<select name=\"authord_".$i."\">";
+            echo "<select name=\"authorord[".$i."]\">";
             foreach($new_authors as $n_au) {
                 $name = get_person_name($n_au);
                 echo "    <option value=\"".$n_au."\">$name</option>\n";
@@ -283,8 +286,10 @@ function do_edit_paper($num)
                     echo "&nbsp;Failed to unassociate proceeding id ".$o_pr['proceedingid']." with paper.<br>\n";
             }
         }
-        $firstpgs = $_POST['procid_fp'];
-        $lastpgs = $_POST['procid_lp'];
+        if (isset($_POST['procid_fp'])) {
+            $firstpgs = $_POST['procid_fp'];
+            $lastpgs = $_POST['procid_lp'];
+        }
 
         foreach($new_procs as $n_pr) {
             $found=false;
@@ -293,8 +298,14 @@ function do_edit_paper($num)
                     $found = true;
             }
             if (!$found) {
-                $firstpg = $firstpgs[$n_pr];
-                $lastpg = $lastpgs[$n_pr];
+                if (isset($_POST['procid_fp'])) {
+                    $firstpg = $firstpgs[$n_pr];
+                    $lastpg = $lastpgs[$n_pr];
+                }
+                else {
+                    $firstpg = 0;
+                    $lastpg = 0;
+                }
                     /* proceeding was in new but not old: insert into database */
                 if (insert_proceeding_for_paper($num, $n_pr, $firstpg, $lastpg))
                     echo "&nbsp;Associate proceeding id ".$n_pr."<br>\n";
@@ -328,6 +339,7 @@ function do_edit_paper($num)
         }
     }
 
+
         /*******************************************
          * Edit the paper authors mapping.
          */
@@ -338,7 +350,6 @@ function do_edit_paper($num)
         if (is_array($old_authors)) {
             echo "<b>Removing authors to correct the ordering.</b><br>";
             foreach($old_authors as $o_au) {
-                    /* author was in old but not new: delete from database */
                 $name = get_person_name($o_au['authorid']);
                 if (delete_author_from_paper($num, $o_au['authorid']))
                     echo "&nbsp;Remove author ".$name." from paper.<br>\n";
@@ -349,14 +360,18 @@ function do_edit_paper($num)
     
         echo "<b>Inserting the authors in order:</b><br>";
         for($i = 0; $i < count($new_authors); $i++) {
-            $aid = $_POST['authord_'.$i];
+            $aid = $new_authors[$i];
             $ordering[$aid] = $i;
+#echo "&nbsp;Author $aid ordering[$aid] = $i.<br>\n";
         }
         foreach($new_authors as $n_au) {
                 /* author was in new but not old: insert into database */
             $name = get_person_name($n_au);
-            @insert_author_to_paper($num, $n_au, $ordering[$n_au]);
-            echo "&nbsp;Inserted author ".$name." for paper.<br>\n";
+#echo "&nbsp;Insert Author $name into paper $num, $ordering[$n_au].<br>\n";
+            if (insert_author_to_paper($num, $n_au, $ordering[$n_au]))
+                echo "&nbsp;Associated author ".$name." for paper.<br>\n";
+            else
+                echo "&nbsp;Failed to associate author ".$name." with paper.<br>\n";
         }
     }
 

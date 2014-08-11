@@ -1,4 +1,13 @@
 <?
+/**
+ * list_proceeds.php
+ *
+ * Copyright (c) 2000-2003 Ruth Ivimey-Cook
+ * Licensed under the GNU GPL. For full terms see the file COPYING.
+ *
+ * $Id: list_proceeds.php,v 1.6 2005/09/27 21:38:06 rivimey Exp $
+ */
+
 
 require_once("html_output_fns.php");
 require_once("misc_fns.php");

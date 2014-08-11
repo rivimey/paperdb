@@ -10,6 +10,33 @@
  * $Id: show_pap.php,v 1.7 2005/09/27 21:32:20 rivimey Exp $
  */
 
+/* change calls with id= to calls with num= */
+if (isset($_GET['id']) || isset($_POST['id'])) {
+
+  // get the id value, which should be a paper number
+  $id = isset($_GET['id']) ? $_GET['id'] : $_POST['id'];
+
+  // there should be a function number too...
+  if ((isset($_GET['f']) || isset($_POST['f'])) && ($id >= 0 && $id <= 9999999)) {
+
+    $f = isset($_GET['f']) ? $_GET['f'] : $_POST['f'];
+
+    $relative_url = "show_pap.php?f=$f&amp;num=$id";
+
+  }
+  else {
+    // shouldn't happen...
+    $relative_url = "show_pap.php?f=1&amp;num=$id";
+  }
+
+  header("Location: http://" . $_SERVER['HTTP_HOST']
+		    . rtrim(dirname($_SERVER['PHP_SELF']), '/\\')
+		    . "/" . $relative_url);
+
+  header("Cache-Control: no-cache, must-revalidate"); // HTTP/1.1
+  header("Expires: Mon, 26 Jul 1997 05:00:00 GMT"); // Date in the past
+}
+
 require_once("paper_fns.php");
 require_once("html_output_fns.php");
 require_once("refer_output_fns.php");
@@ -18,8 +45,9 @@ require_once("book_output_fns.php");
 
 session_start();
 $f = isset($_GET['f']) ? $_GET['f'] : $_POST['f'];
-  
-if ($f > 0 && $f < 6 ) {
+ 
+if ($f > 0 && $f < 6 && (isset($_GET['num']) || isset($_POST['num']) )) {
+   
     $num = isset($_GET['num']) ? $_GET['num'] : $_POST['num'];
 
     $paper = get_paper($num);

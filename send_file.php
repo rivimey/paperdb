@@ -11,17 +11,41 @@
  * $Id: send_file.php,v 1.6 2005/09/27 21:39:10 rivimey Exp $
  */
 
+/* change calls with id= to calls with num= */
+if (isset($_GET['id']) || isset($_POST['id'])) {
+
+  // get the id value, which should be a paper number
+  $id = isset($_GET['id']) ? $_GET['id'] : $_POST['id'];
+
+  // there should be a function number too...
+  if ($id >= 0 && $id <= 9999999)
+    $relative_url = "send_file.php?num=$id";
+  else
+    $relative_url = "send_file.php";
+
+  header("Location: http://" . $_SERVER['HTTP_HOST']
+		    . rtrim(dirname($_SERVER['PHP_SELF']), '/\\')
+		    . "/" . $relative_url);
+
+  header("Cache-Control: no-cache, must-revalidate"); // HTTP/1.1
+  header("Expires: Mon, 26 Jul 1997 05:00:00 GMT"); // Date in the past
+}
+
+
 require_once("html_output_fns.php");
 require_once("paper_fns.php");
 
 session_cache_limiter('private');
 session_start();
-  
-$num = $_GET['num'];
-if ( ! $num)
+ 
+if ( !isset($_GET['num'])) {
     do_para("No file?");
-else
-$paper = get_file_by_id($num);
+    $paper="";
+}
+else {
+    $num = $_GET['num'];
+    $paper = get_file_by_id($num);
+}
 
 if (is_array($paper)) {
     if ($maintain_stats)
