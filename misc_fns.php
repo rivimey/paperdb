@@ -12,28 +12,29 @@
 
 require_once("user_auth_fns.php");
 
-//-------------------------------------------------------------------------
-// make_name
-//
-//   Used by many routines to create a name from a person db record using
-// one of two styles:
-//  Style == 1 is:
-//        title firstname lastname, whereas
-//  Style == 0 is:
-//        lastname, title firstname.
-//
-//  Style + 2 means never put an edit user link in the name.
-//
-// Style + 4 means don't include the title
-//  
-//   If this is an admin session, make the names links to the person edit
-// page.
-// 
-//-------------------------------------------------------------------------
-
+/**
+ * Used by many routines to create a name from a person db record using
+ * one of the styles.
+ * If this is an admin session, make the names links to the person edit
+ * page.
+ *
+ * @param $person
+ * @param $style
+ *  Style == 0 is:
+ *        lastname, title firstname.
+ *  Style == 1 is:
+ *        title firstname lastname, whereas
+ *
+ *  Style + 2 means never put an edit user link in the name.
+ *
+ *  Style + 4 means don't include the title
+ *
+ * @return string
+ *   the name
+ */
 function make_name($person, $style) {
   $res = "";
-  if (!empty($person["title"])) {
+  if ((($style & 4) == 4) || (empty($person["title"]))) {
     $ttl = "";
   }
   else {

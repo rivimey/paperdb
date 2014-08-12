@@ -16,6 +16,39 @@ require_once("misc_fns.php");
 require_once("html_output_fns.php");
 require_once("file_output_fns.php");
 
+/**
+ * Output the metatags for the paper.
+ */
+function do_paper_metatags($title, $paper) {
+  $paperid = $paper["paperid"];
+
+  echo "<meta name=\"DC.Language\" content=\"en\" />";
+  echo "<meta name=\"DC.Title\" content=\"" .  $title . "\" />";
+  foreach ($authorlist as $item) {
+    $author = make_name($item, 6);
+    echo "<meta name=\"DC.contributor\" content=\"" .  $author . "\" />";
+  }
+  echo "<meta name=\"citation_title\" content=\"" .  $title . "\" />";
+  $authorlist = get_authors_by_listid($paper["paperid"]);
+  foreach ($authorlist as $item) {
+    $author = make_name($item, 6);
+    echo "<meta name=\"citation_author\" content=\"" .  $author . "\" />";
+  }
+  echo "<meta name=\"citation_access\" content=\"all\" />";
+  echo "<meta name=\"og:type\" content=\"article\" />";
+
+  $proceedings = get_proceedings_by_paperid($paperid);
+  if (is_array($proceedings)) {
+    foreach ($proceedings as $proc) {
+      $pages = get_paperinfo_by_paperid_and_procid($paperid, $proc["proceedingid"]);
+      echo "<meta name=\"citation_journal\" content=\"" .  $proc['title'] . "\">";
+      echo "<meta name=\"citation_firstpage\" content=\"" .  $pages["firstpage"] . "\">";
+      echo "<meta name=\"citation_publication_date\" content=\"" . $proc["pubyear"]  . "\">";
+    }
+    echo "</tr>\n";
+  }
+}
+
 //--------------------------------------------------------------------------------------
 //   display_paper_link
 //
