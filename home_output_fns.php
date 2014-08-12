@@ -23,12 +23,12 @@ function display_paper_frontpage($paper) {
     <h2><?= $paper["title"] ?></h2>
     <p class="frontpage-authors">By <?= $auths ?></p>
     <div class="frontpage-abstract">
-      <? if ($paper["abstract"] != "") {
+      <?php if ($paper["abstract"] != "") {
         echo $paper["abstract"] . "\n";
       }
       ?></div><p align="right">
     <a href="/paperdb/show_pap.php?f=1&amp;num=<?= $num ?>">Complete record...</a>
-  <?
+  <?php
   }
 }
 

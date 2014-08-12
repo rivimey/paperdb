@@ -1,4 +1,4 @@
-<?
+<?php
 /**
  * admin_fns.php
  *
@@ -77,7 +77,7 @@ function display_admin_menu() {
     <li><a href="logout.php">Log out of admin mode</a></li>
     <li><a href="index.php">Go to main site</a></li>
   </ul>
-<?
+<?php
 }
 
 

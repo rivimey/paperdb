@@ -98,7 +98,7 @@ function display_paper_verbose($paper, $proceedingstoo = FALSE) {
     <tr>
       <td width="100">Title:</td>
       <td colspan="3"><b><?= $paper["title"] ?></b>
-        <?  if (session_is_registered("admin_user")) {
+        <?php  if (session_is_registered("admin_user")) {
           do_html_url("edit_paper.php?f=1&amp;num=$num", "Edit");
         }
         ?>
@@ -108,18 +108,18 @@ function display_paper_verbose($paper, $proceedingstoo = FALSE) {
       <td>Authors:</td>
       <td colspan="3"><?= $auths ?></td>
     </tr>
-    <? if ($paper["paper_url"] != "") { ?>
+    <?php if ($paper["paper_url"] != "") { ?>
       <tr>
         <td valign="top">URL:</td>
         <td colspan="3"><a href="<?= $url ?>"><?= $url ?></a></td>
       </tr>
-    <? } ?>
-    <? if ($paper["abstract"] != "") { ?>
+    <?php } ?>
+    <?php if ($paper["abstract"] != "") { ?>
       <tr>
         <td valign="top">Abstract:</td>
         <td colspan="3" class="abstract"><?= $paper["abstract"] ?></td>
       </tr>
-    <? } ?>
+    <?php } ?>
     <tr>
       <td>Bibliography:</td>
       <td>
@@ -129,7 +129,7 @@ function display_paper_verbose($paper, $proceedingstoo = FALSE) {
         <a href="show_pap.php?f=5&amp;num=<?= $num ?>">Refer</a>
       </td>
     </tr>
-    <?
+    <?php
     if ($proceedingstoo) {
       $proceedings = get_proceedings_by_paperid($paper["paperid"]);
       if (is_array($proceedings)) {

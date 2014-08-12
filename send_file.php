@@ -1,4 +1,4 @@
-<?
+<?php
 /**
  * send_file.php
  *

@@ -1,4 +1,4 @@
-<?
+<?php
 /**
  * insert_papers_form.php
  *

@@ -1,4 +1,4 @@
-<?
+<?php
 /**
  * insert_person_form.php
  *

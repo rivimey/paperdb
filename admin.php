@@ -1,4 +1,4 @@
-<?
+<?php
 /**
  * admin.php
  *

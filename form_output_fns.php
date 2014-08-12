@@ -43,7 +43,7 @@ function display_password_form() {
     </tr>
   </table>
   <br>
-<?
+<?php
 }
 
 
@@ -62,7 +62,7 @@ function display_person_form($person = "") {
   echo "<form enctype=\"multipart/form-data\" method=\"post\" action=\"$action\">\n";
   ?>
   <table class="Papertable">
-    <? if ($edit) { ?>
+    <?php if ($edit) { ?>
       <input type="hidden" name="f" value="2" />
       <tr>
         <td>ID:</td>
@@ -70,7 +70,7 @@ function display_person_form($person = "") {
           <input type="text" readonly name="num" value="<?= $edit ? $person['personid'] : '' ?>" />
         </td>
       </tr>
-    <? } ?>
+    <?php } ?>
     <tr>
       <td>Title:</td>
       <td>
@@ -177,7 +177,7 @@ function display_person_form($person = "") {
     <tr>
   </table>
   </form>
-<?
+<?php
 }
 
 
@@ -242,7 +242,7 @@ function display_org_form($org = '') {
       <tr>
     </table>
   </form>
-<?
+<?php
 }
 
 //--------------------------------------------------------------------------------------
@@ -333,7 +333,7 @@ function display_proceeding_form($proceeding = "") {
       <td>Publisher:</td>
       <td>
         <select size="2" name="publisherid">
-          <?
+          <?php
           // list of possible publishers comes from database
           foreach ($pub_array as $thispub) {
             echo "<option value=\"";
@@ -356,7 +356,7 @@ function display_proceeding_form($proceeding = "") {
       <td>Editor(s):</td>
       <td>
         <select name="editors[]" size="15" multiple>
-          <?
+          <?php
           // list of possible editors comes from database
           foreach ($peop_array as $thispers) {
             echo "<option value=\"";
@@ -389,10 +389,10 @@ function display_proceeding_form($proceeding = "") {
     </tr>
 
     <tr>
-      <td <? if (!$edit) {
+      <td <?php if (!$edit) {
         echo "colspan=2";
       } ?> align=center>
-        <?
+        <?php
         if ($edit)
           // we might need the old isbn to find proceeding in database
           // if the isbn is being updated
@@ -403,7 +403,7 @@ function display_proceeding_form($proceeding = "") {
         <input type=submit
                value="<?= $edit ? "Update" : "Add"; ?> Proceeding">
         </form></td>
-      <?
+      <?php
       if ($edit) {
         echo "<td>";
         echo "<form method=post action=\"delete_proceeding.php\">";
@@ -416,7 +416,7 @@ function display_proceeding_form($proceeding = "") {
     </tr>
   </table>
   </form>
-<?
+<?php
 }
 
 //------------------------------------------------------------------------------------------------------------------------------

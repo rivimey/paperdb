@@ -1,4 +1,4 @@
-<?
+<?php
 
 // include function files for this application
 

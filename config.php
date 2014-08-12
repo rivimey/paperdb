@@ -52,7 +52,5 @@ function local_html_footer() {
   <p>
     <?php include $documentRootDir . "/style/copy.htm" ?>
   </p>
-<?
+<?php
 }
-
-?>

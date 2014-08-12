@@ -1,4 +1,4 @@
-<?
+<?php
 /**
  * fixup_text.php
  *
@@ -202,8 +202,7 @@ if (session_is_registered("admin_user")) {
     <li><a href="create_refs.php">Fill in unset ref texts</a></li>
     <li><a href="index.php">Go to main site</a></li>
   </ul>
-<?
+<?php
 }
 
 do_html_footer();
-

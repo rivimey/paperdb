@@ -1,4 +1,4 @@
-<?
+<?php
 /**
  * create_refs.php
  *

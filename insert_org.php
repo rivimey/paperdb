@@ -1,4 +1,4 @@
-<?
+<?php
 
 // include function files for this application
 require_once("html_output_fns.php");

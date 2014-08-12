@@ -1,4 +1,4 @@
-<?
+<?php
 /**
  * show_pap.php
  *
@@ -83,7 +83,7 @@ if ($f > 0 && $f < 6 && (isset($_GET['num']) || isset($_POST['num']))) {
 }
 else {
   do_html_header("Paper details", "nofollow");
-  echo "show_pap: Unimplemented function\n";
+  do_para("show_pap: Unimplemented function");
 }
 
 // if logged in as admin, show add, delete, edit cat links

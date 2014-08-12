@@ -1,4 +1,4 @@
-<?
+<?php
 /**
  * show_proc.php
  *

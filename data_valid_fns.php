@@ -1,4 +1,4 @@
-<?
+<?php
 /**
  * data_valid_fns.php
  *

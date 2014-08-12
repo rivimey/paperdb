@@ -1,4 +1,4 @@
-<?
+<?php
 /**
  * list_editors.php
  *

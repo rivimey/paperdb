@@ -1,4 +1,4 @@
-<?
+<?php
 /**
  * insert_proceeding_form.php
  *

@@ -1,4 +1,4 @@
-<?
+<?php
 /**
  * list_authors.php
  *

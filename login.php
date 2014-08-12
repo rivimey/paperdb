@@ -1,4 +1,4 @@
-<?
+<?php
 /**
  * login.php
  *
@@ -30,6 +30,6 @@ do_html_header("Administration");
     <tr>
   </table>
 </form>
-<?
+<?php
 
 do_html_footer();

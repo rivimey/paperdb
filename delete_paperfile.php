@@ -1,4 +1,4 @@
-<?
+<?php
 /**
  * delete_paperfile.php
  *
