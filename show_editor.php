@@ -10,6 +10,7 @@
  * $Id: show_editor.php,v 1.4 2005/09/27 21:39:10 rivimey Exp $
  */
 
+require_once("compat_fns.php");
 require_once("html_output_fns.php");
 require_once("paper_fns.php");
 require_once("book_output_fns.php");

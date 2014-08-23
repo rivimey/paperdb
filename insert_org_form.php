@@ -1,5 +1,6 @@
 <?php
 
+require_once("compat_fns.php");
 require_once("html_output_fns.php");
 require_once("user_auth_fns.php");
 require_once("form_output_fns.php");

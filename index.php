@@ -10,6 +10,7 @@
  * $Id: index.php,v 1.5 2005/09/27 21:41:07 rivimey Exp $
  */
 
+require_once("compat_fns.php");
 
 require_once('html_output_fns.php');
 require_once('paper_fns.php');

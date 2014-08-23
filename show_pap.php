@@ -10,6 +10,8 @@
  * $Id: show_pap.php,v 1.7 2005/09/27 21:32:20 rivimey Exp $
  */
 
+require_once("compat_fns.php");
+
 /* change calls with id= to calls with num= */
 if (isset($_GET['id']) || isset($_POST['id'])) {
 

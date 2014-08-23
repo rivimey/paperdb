@@ -10,6 +10,7 @@
  * $Id: list_authors.php,v 1.3 2004/11/16 00:52:20 rivimey Exp $
  */
 
+require_once("compat_fns.php");
 require_once("html_output_fns.php");
 
 session_start();

@@ -1,5 +1,6 @@
 <?php
 
+require_once("compat_fns.php");
 require_once("db_fns.php");
 
 function login($username, $password)

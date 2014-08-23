@@ -10,6 +10,8 @@
  * $Id: insert_person.php,v 1.3 2005/09/27 21:38:06 rivimey Exp $
  */
 
+require_once("compat_fns.php");
+
 session_start();
 
 require_once("html_output_fns.php");

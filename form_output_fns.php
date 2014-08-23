@@ -10,6 +10,7 @@
  * $Id: form_output_fns.php,v 1.11 2005/09/27 21:43:20 rivimey Exp $
  */
 
+require_once("compat_fns.php");
 require_once("paper_fns.php");
 
 //--------------------------------------------------------------------------------------

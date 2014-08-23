@@ -1,3 +1,4 @@
+<?php
 /**
 * output_fns.php
 *
@@ -9,8 +10,7 @@
 * $Id: output_fns.php,v 1.4 2005/09/27 21:33:53 rivimey Exp $
 */
 
-<?php
-
+require_once("compat_fns.php");
 require_once("misc_fns.php"); // namelist fns
 
 //------------------------------------------------------------------------------------------------------------------------------

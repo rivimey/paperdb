@@ -10,6 +10,7 @@
  * $Id: fixup_text.php,v 1.3 2005/09/27 21:41:07 rivimey Exp $
  */
 
+require_once("compat_fns.php");
 require_once("html_output_fns.php");
 require_once("paper_fns.php");
 require_once("admin_fns.php");

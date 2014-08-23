@@ -10,6 +10,7 @@
  * $Id: misc_fns.php,v 1.8 2005/09/27 21:33:53 rivimey Exp $
  */
 
+require_once("compat_fns.php");
 require_once("user_auth_fns.php");
 
 /**

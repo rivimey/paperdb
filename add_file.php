@@ -10,6 +10,8 @@
  * $Id: add_file.php,v 1.6 2005/09/27 21:43:20 rivimey Exp $
  */
 
+require_once("compat_fns.php");
+
 session_start();
 
 require_once("html_output_fns.php");
@@ -79,5 +81,3 @@ do_html_url("index.php", "Back to main menu");
 echo "</ul>";
 
 do_html_footer();
-
-?>

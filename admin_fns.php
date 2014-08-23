@@ -11,6 +11,7 @@
  * $Id: admin_fns.php,v 1.10 2005/07/23 23:23:36 rivimey Exp $
  */
 
+require_once("compat_fns.php");
 require_once("db_fns.php");
 require_once("html_output_fns.php");
 
@@ -111,10 +112,10 @@ function insert_proceeding($title, $subtitle, $pubid, $series, $editors, $isbn,
   }
 
   // insert this record;
-  $query = "insert into proceedings set  title=" . sqlvalue($title) . ", subtitle=" . sqlvalue($subtitle) . ", publisherid=" . sqlvalue($pubid, "N") . ", " .
-    "pubyear=" . sqlvalue($pubyear, "N") . ", pubmonth=" . sqlvalue($pubmonth, "N") . ", pubday=" . sqlvalue($pubday, "N") . ", " .
-    "series=" . sqlvalue($series) . ", isbn=" . sqlvalue($isbn) . ", issn=" . sqlvalue($issn) . ", volume=" . sqlvalue($volm, "N") . ", " .
-    "totpages=" . sqlvalue($totpg, "N") . ",  proceedingurl=" . sqlvalue($url);
+  $query = "insert into proceedings set  title=".sqlvalue($title).", subtitle=".sqlvalue($subtitle).", publisherid=".sqlvalue($pubid, "N").", ".
+  				"pubyear=".sqlvalue($pubyear, "N").", pubmonth=".sqlvalue($pubmonth, "N").", pubday=".sqlvalue($pubday, "N").", ".
+				"series=".sqlvalue($series).", isbn=".sqlvalue($isbn).", issn=".sqlvalue($issn).", volume=".sqlvalue($volm, "N").", ".
+				"totpages=".sqlvalue($totpg, "N").",  proceedingurl=".sqlvalue($url);
   $result = mysql_query($query);
   if (!$result) {
     echo "insert_proceeding: insert proceeding failed.<br>\n";

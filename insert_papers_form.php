@@ -10,6 +10,7 @@
  * $Id: insert_papers_form.php,v 1.1 2003/05/11 16:53:05 ruthc Exp $
  */
 
+require_once("compat_fns.php");
 require_once("html_output_fns.php");
 require_once("user_auth_fns.php");
 require_once("form_output_fns.php");

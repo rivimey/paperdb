@@ -10,6 +10,7 @@
  * $Id: show_auth.php,v 1.8 2005/09/27 21:32:20 rivimey Exp $
  */
 
+require_once("compat_fns.php");
 require_once("html_output_fns.php");
 require_once("paper_fns.php");
 require_once("book_output_fns.php");

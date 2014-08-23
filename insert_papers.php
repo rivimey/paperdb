@@ -11,6 +11,7 @@
  * $Id: insert_papers.php,v 1.4 2005/09/27 21:38:06 rivimey Exp $
  */
 
+require_once("compat_fns.php");
 require_once("html_output_fns.php");
 require_once("user_auth_fns.php");
 require_once("admin_fns.php");

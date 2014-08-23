@@ -10,8 +10,7 @@
  * $Id: insert_person_form.php,v 1.2 2003/07/05 17:05:40 rivimey Exp $
  */
 
-
-// include function files for this application
+require_once("compat_fns.php");
 require_once("html_output_fns.php");
 require_once("user_auth_fns.php");
 require_once("form_output_fns.php");

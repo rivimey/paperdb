@@ -11,6 +11,7 @@
  * $Id: delete_paperfile.php,v 1.3 2005/09/27 21:43:20 rivimey Exp $
  */
 
+require_once("compat_fns.php");
 require_once("html_output_fns.php");
 require_once("user_auth_fns.php");
 require_once("admin_fns.php");

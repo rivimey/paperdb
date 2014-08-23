@@ -10,6 +10,7 @@
  * $Id: edit_paper.php,v 1.12 2005/09/27 21:45:41 rivimey Exp $
  */
 
+require_once("compat_fns.php");
 require_once('user_auth_fns.php');
 require_once('misc_fns.php');
 require_once('html_output_fns.php');

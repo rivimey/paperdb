@@ -10,6 +10,7 @@
  * $Id: login.php,v 1.1 2003/05/11 16:53:05 ruthc Exp $
  */
 
+require_once("compat_fns.php");
 require_once("html_output_fns.php");
 
 do_html_header("Administration");

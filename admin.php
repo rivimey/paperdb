@@ -10,6 +10,8 @@
  * $Id: admin.php,v 1.3 2004/11/04 17:52:12 rivimey Exp $
  */
 
+require_once("compat_fns.php");
+
 session_start();
 
 require_once("html_output_fns.php");
@@ -50,5 +52,4 @@ else {
   echo "You are not authorized to enter the administration area.";
 }
 
-do_html_footer();
-?>
+do_html_footer(); 

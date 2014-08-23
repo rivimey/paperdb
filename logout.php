@@ -10,7 +10,7 @@
  * $Id: logout.php,v 1.2 2004/11/16 00:52:20 rivimey Exp $
  */
 
-// include function files for this application
+require_once("compat_fns.php");
 require_once("html_output_fns.php");
 require_once("admin_fns.php");
 require_once("user_auth_fns.php");

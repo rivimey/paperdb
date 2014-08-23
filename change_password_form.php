@@ -1,4 +1,5 @@
 <?php
+require_once("compat_fns.php");
 require_once("html_output_fns.php");
 require_once("user_auth_fns.php");
 
@@ -10,4 +11,4 @@ display_password_form();
 
 do_html_url("admin.php", "Back to Administration Menu");
 do_html_footer();
-?>
+

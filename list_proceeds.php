@@ -8,7 +8,7 @@
  * $Id: list_proceeds.php,v 1.6 2005/09/27 21:38:06 rivimey Exp $
  */
 
-
+require_once("compat_fns.php");
 require_once("html_output_fns.php");
 require_once("misc_fns.php");
 require_once("paper_fns.php");

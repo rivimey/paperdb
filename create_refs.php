@@ -10,6 +10,7 @@
  * $Id: create_refs.php,v 1.1 2004/11/04 17:52:13 rivimey Exp $
  */
 
+require_once("compat_fns.php");
 require_once("html_output_fns.php");
 require_once("paper_fns.php");
 require_once("admin_fns.php");

@@ -10,6 +10,7 @@
  * $Id: book_output_fns.php,v 1.8 2005/09/27 21:45:41 rivimey Exp $
  */
 
+require_once("compat_fns.php");
 require_once("misc_fns.php");
 require_once("paper_output_fns.php");
 require_once("paper_fns.php");

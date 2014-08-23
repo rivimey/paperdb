@@ -1,4 +1,14 @@
 <?php
+/**
+ * file_output_fns.php
+ *
+ * Copyright (c) 2003 Ruth Ivimey-Cook
+ * Licensed under the GNU GPL. For full terms see the file COPYING.
+ *
+ * Functions returning information about files associated with papers.
+ *
+ */
+
 
 
 //------------------------------------------------------------------------------------------------------------------------------

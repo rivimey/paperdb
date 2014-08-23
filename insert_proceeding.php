@@ -10,6 +10,8 @@
  * $Id: insert_proceeding.php,v 1.1 2003/05/11 16:53:05 ruthc Exp $
  */
 
+require_once("compat_fns.php");
+
 session_start();
 
 require_once("html_output_fns.php");

@@ -11,6 +11,8 @@
  * $Id: send_file.php,v 1.6 2005/09/27 21:39:10 rivimey Exp $
  */
 
+require_once("compat_fns.php");
+
 /* change calls with id= to calls with num= */
 if (isset($_GET['id']) || isset($_POST['id'])) {
 
