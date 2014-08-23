@@ -25,6 +25,7 @@ $entitiesToBibTeX = array(
   "~" => "\\~{}",
   "_" => "\\_",
   "|" => "\\textbar",
+
   "&nbsp;" => " ",
   "&iexcl;" => "!'",
   "&cent;" => "\\textcent",
@@ -56,6 +57,7 @@ $entitiesToBibTeX = array(
   "&frac12;" => "\\textonehalf",
   "&frac34;" => "\\textthreequarters",
   "&iquest;" => "?'",
+
   "&atilde;" => "\\~{a}",
   "&etilde;" => "\\~{e}",
   "&itilde;" => "\\~{i}",
@@ -66,6 +68,7 @@ $entitiesToBibTeX = array(
   "&Itilde;" => "\\~{I}",
   "&Otilde;" => "\\~{O}",
   "&Ntilde;" => "\\~{N}",
+
   "&acirc;" => "\\^{a}",
   "&ecirc;" => "\\^{e}",
   "&icirc;" => "\\^{i}",
@@ -76,6 +79,7 @@ $entitiesToBibTeX = array(
   "&Icirc;" => "\\^{I}",
   "&Ocirc;" => "\\^{O}",
   "&Ucirc;" => "\\^{U}",
+
   "&aacute;" => "\\`{a}",
   "&eacute;" => "\\`{e}",
   "&iacute;" => "\\`{i}",
@@ -88,6 +92,7 @@ $entitiesToBibTeX = array(
   "&Oacute;" => "\\`{O}",
   "&Uacute;" => "\\`{U}",
   "&Yacute;" => "\\`{Y}",
+
   "&agrave;" => "\\'{a}",
   "&egrave;" => "\\'{e}",
   "&igrave;" => "\\'{i}",
@@ -98,6 +103,7 @@ $entitiesToBibTeX = array(
   "&Igrave;" => "\\'{I}",
   "&Ograve;" => "\\'{O}",
   "&Ugrave;" => "\\'{U}",
+
   "&auml;" => "\\\"{a}",
   "&euml;" => "\\\"{e}",
   "&iuml;" => "\\\"{i}",
@@ -110,23 +116,30 @@ $entitiesToBibTeX = array(
   "&Ouml;" => "\\\"{O}",
   "&Uuml;" => "\\\"{U}",
   "&Yuml;" => "\\\"{Y}",
+
   "&Oslash;" => "\\O",
   "&oslash;" => "\\o",
+
   // "&Scaron;"	=>	"",	-- no symbol.
   // "&scaron;"	=>	"",	-- no symbol.
 
   "&Ccedil;" => "\\c{C}",
   "&ccedil;" => "\\c{c}",
+
   "&THORN;" => "\\TH",
   "&thorn;" => "\\th",
   "&ETH;" => "\\DH",
   "&eth;" => "\\dh",
+
   "&aring;" => "\\aa",
   "&Aring;" => "\\AA",
+
   "&aelig;" => "\\ae",
   "&AElig;" => "\\AE",
+
   "&oelig;" => "\\oe",
   "&OElig;" => "\\OE",
+
   "&szlig;" => "\\ae",
 );
 
@@ -136,6 +149,7 @@ $entitiesToRefer = array(
   "\"" => "\\[dq]",
   "#" => "\\[sh]",
   "-" => "\\-",
+
   "&nbsp;" => "\ ",
   "&iexcl;" => "\\[r!]",
   "&cent;" => "\\[ct]",
@@ -167,6 +181,7 @@ $entitiesToRefer = array(
   "&frac12;" => "\\[12]",
   "&frac34;" => "\\[34]",
   "&iquest;" => "\\[r?]",
+
   "&atilde;" => "\\[~a]",
   "&etilde;" => "\\[~e]", // not supported?
   "&itilde;" => "\\[~i]", // not supported?
@@ -177,6 +192,7 @@ $entitiesToRefer = array(
   "&Itilde;" => "\\[~I]", // not supported?
   "&Otilde;" => "\\[~O]",
   "&Ntilde;" => "\\[~N]",
+
   "&acirc;" => "\\[^a]",
   "&ecirc;" => "\\[^e]",
   "&icirc;" => "\\[^i]",
@@ -187,6 +203,7 @@ $entitiesToRefer = array(
   "&Icirc;" => "\\[^I]",
   "&Ocirc;" => "\\[^O]",
   "&Ucirc;" => "\\[^U]",
+
   "&aacute;" => "\\[`a]",
   "&eacute;" => "\\[`e]",
   "&iacute;" => "\\[`i]",
@@ -199,6 +216,7 @@ $entitiesToRefer = array(
   "&Oacute;" => "\\[`O]",
   "&Uacute;" => "\\[`U]",
   "&Yacute;" => "\\[`Y]",
+
   "&agrave;" => "\\['a]",
   "&egrave;" => "\\['e]",
   "&igrave;" => "\\['i]",
@@ -209,6 +227,7 @@ $entitiesToRefer = array(
   "&Igrave;" => "\\['I]",
   "&Ograve;" => "\\['O]",
   "&Ugrave;" => "\\['U]",
+
   "&auml;" => "\\[\"a]",
   "&euml;" => "\\[\"e]",
   "&iuml;" => "\\[\"i]",
@@ -221,23 +240,31 @@ $entitiesToRefer = array(
   "&Ouml;" => "\\[\"O]",
   "&Uuml;" => "\\[\"U]",
   "&Yuml;" => "\\[\"Y]",
+
   "&Scaron;" => "\\[vS]",
   "&scaron;" => "\\[vs]",
+
   "&Oslash;" => "\\[/O]",
   "&oslash;" => "\\[/o]",
+
   "&Ccedil;" => "\\[,C]",
   "&ccedil;" => "\\[,c]",
+
   "&THORN;" => "\\[TP]",
   "&thorn;" => "\\[Tp]",
   "&ETH;" => "\\[-D]",
   "&eth;" => "\\[Sd]",
+
   "&aring;" => "\\[oa]",
   "&Aring;" => "\\[oA]",
   "&aelig;" => "\\[ae]",
   "&AElig;" => "\\[AE]",
+
   "&oelig;" => "\\[oe]",
   "&OElig;" => "\\[OE]",
+
   "&szlig;" => "\\ss",
+
   // "&euro;"	=>	"\\[eu]"	-- no symbol.
   "&circ;" => "\\[a^]"
 );
@@ -309,7 +336,6 @@ function XML2ReferHTML($str) {
 
 function XML2BibTexText($str, $dobr) {
   global $entitiesToBibTeX;
-
 
   $str = str_replace("</p><p>", "\n", $str);
   $str = str_replace("<p>", "", $str);

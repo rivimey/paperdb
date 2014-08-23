@@ -249,11 +249,6 @@ function do_bibtex_html($paper, $proc) {
       $str = to_bibtex_month($str);
       echo $spc . "month=         \"$str\",$br";
     }
-    $str = $proc["pubmonth"];
-    if ($str != "") {
-	$str = to_bibtex_month($str);
-        echo $spc."month=         \"$str\",$br";
-    }
   }
 
   $str = $paper["abstract"];
@@ -310,11 +305,6 @@ function do_bibtex_text($paper, $proc) {
     if ($str != "") {
       $str = to_bibtex_month($str);
       echo $spc . "month=         \"$str\",$br";
-    }
-    $str = $proc["pubmonth"];
-    if ($str != "") {
-	$str = to_bibtex_month($str);
-        echo $spc."month=         \"$str\",$br";
     }
   }
 
