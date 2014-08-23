@@ -36,15 +36,15 @@ if (isset($_POST['goButton']) && $_POST['goButton'] = "Search") {
       $w = $_POST['what'][$i];
 
       if ($w == 1) { // title
-        $where[$wnum++] = "papers.title REGEXP " . sqlvalue($t);
+        $where[$wnum++] = "papers.title REGEXP " . sqlvalue($t, "A");
         $tables["papers"] = 1;
       }
       elseif ($w == 2) { // author surname
-        $where[$wnum++] = "people.lastname REGEXP " . sqlvalue($t);
+        $where[$wnum++] = "people.lastname REGEXP " . sqlvalue($t, "A");
         $pers_paper_link = 1;
       }
       elseif ($w == 3) { // author firstname
-        $where[$wnum++] = "people.firstname REGEXP " . sqlvalue($t);
+        $where[$wnum++] = "people.firstname REGEXP " . sqlvalue($t, "A");
         $pers_paper_link = 1;
       }
       elseif ($w == 4) { // abstract
@@ -52,7 +52,7 @@ if (isset($_POST['goButton']) && $_POST['goButton'] = "Search") {
         $tables["papers"] = 1;
       }
       elseif ($w == 5) { // reftext
-        $where[$wnum++] = "papers.reftext REGEXP " . sqlvalue($t);
+        $where[$wnum++] = "papers.reftext REGEXP " . sqlvalue($t, "A");
         $tables["papers"] = 1;
       }
       elseif ($w == 6) { // year
@@ -60,7 +60,7 @@ if (isset($_POST['goButton']) && $_POST['goButton'] = "Search") {
         $proc_paper_link = 1;
       }
       elseif ($w == 7) { // isbn
-        $where[$wnum++] = "proceedings.isbn REGEXP " . sqlvalue($t);
+        $where[$wnum++] = "proceedings.isbn REGEXP " . sqlvalue($t, "A");
         $proc_paper_link = 1;
       }
       elseif ($w == 8) { // files attached
@@ -229,7 +229,7 @@ if (isset($_POST['goButton']) && $_POST['goButton'] = "Search") {
     }
     echo ">Has File Attachments</option>\n";
     echo "</select>";
-    echo "</td><td><input type=\"text\" name=\"text[$i]\" size=\"60\" maxlength=\"120\" value=" . sqlvalue($v) . "></td>\n";
+    echo "</td><td><input type=\"text\" name=\"text[$i]\" size=\"60\" maxlength=\"120\" value=\"" . htmlentities($v) . "\"></td>\n";
   }
   echo "<tr><td valign=\"bottom\" rowspan=\"2\" align=\"left\">";
   echo "<input type=\"submit\" name=\"goButton\" value=\"Search\"></td></tr>\n";
