@@ -20,16 +20,15 @@ function display_paper_frontpage($paper) {
   if (is_array($paper)) {
     // $url = $paper["paper_url"];
     $num = $paper["paperid"];
-    ?>
-    <h2><?= $paper["title"] ?></h2>
-    <p class="frontpage-authors">By <?= $auths ?></p>
-    <div class="frontpage-abstract">
-      <?php if ($paper["abstract"] != "") {
-        echo $paper["abstract"] . "\n";
-      }
-      ?></div><p align="right">
-    <a href="/paperdb/show_pap.php?f=1&amp;num=<?= $num ?>">Complete record...</a>
-  <?php
+    do_html_heading($paper["title"], 2);
+    do_para("By $auths", "class=\"frontpage-authors\"");
+    echo "<div class=\"frontpage-abstract\">";
+    if ($paper["abstract"] != "") {
+      echo $paper["abstract"] . "\n";
+    }
+    echo "</div>";
+    $link = " <a href = \"/paperdb/show_pap.php?f=1&amp;num=$num\" >Complete record ...</a>";
+    do_para($link, "align = \"right\"");
   }
 }
 

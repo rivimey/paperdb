@@ -63,16 +63,19 @@ function do_html_footer() {
  *
  * @param $heading
  */
-function do_html_heading($heading) {
-  echo "<h1>$heading</h1>\n";
+function do_html_heading($heading, $level = "1") {
+  echo "<h$level>$heading</h$level>\n";
 }
 
 /**
  * Shortcut to write an html paragraph
  * @param $text
  */
-function do_para($text) {
-  echo "<p>$text</p>\n";
+function do_para($text, $attrs = "") {
+  if (!empty($attrs) > "") {
+    $attrs = " " . $attrs;
+  }
+  echo "<p$attrs>$text</p>\n";
 }
 
 /**
