@@ -47,7 +47,7 @@ function get_list_query($query) {
 function get_proceedingid_for_paper($paperid) {
   // query database for a list of papers in this proceeding
   $conn = db_connect();
-  $query = "select * from proceedings where paperlist.paperid ='$paperid' and paperlist.proceedingid = proceedings.proceedingid";
+  $query = "select * from proceedings where paperlist.paperid = " . sqlvalue($paperid, "N") . " and paperlist.proceedingid = proceedings.proceedingid";
   $result = @mysql_query($query);
   if (!$result) {
     echo "get_proceedingid_for_paper: query \"$query\" failed.<br>\n";
@@ -409,7 +409,7 @@ function get_paper_file_ids($num) {
 function get_file_by_id($num) {
   // query database for a proceeding
   $conn = db_connect();
-  $query = "select * from paperfile where fileid = '$num'";
+  $query = "select * from paperfile where fileid = " . sqlvalue($num, "N");
   $result = @mysql_query($query);
   if (!$result) {
     echo "get_paper_file_ids: query failed.<br>\n";
@@ -437,7 +437,7 @@ function get_papers_by_author($num) {
   // query database for a proceeding
   $conn = db_connect();
   $query = "select papers.* from papers,authorlist " .
-    "where authorlist.authorid ='$num' and authorlist.authors = papers.paperid " .
+    "where authorlist.authorid = " . sqlvalue($num, "N") . " and authorlist.authors = papers.paperid " .
     "order by papers.paperid";
   $result = @mysql_query($query);
   if (!$result) {
@@ -529,7 +529,7 @@ function get_papers_and_proceedings($so) {
 
   // create a list that we can then sort nicely.
   $query =
-    "select papers.paperid, GREATEST(paperlist.lastpage - paperlist.firstpage + 1, 1) as pages, " .
+    "select papers.paperid, greatest(ifnull(paperlist.lastpage, 99999) - ifnull(paperlist.firstpage, 99999) + 1, 1) as pages, " .
     "papers.title as 'papertitle', proceedings.title as 'proctitle', proceedings.pubyear " .
     "from papers, paperlist, proceedings " .
     "where paperlist.paperid =papers.paperid and proceedings.proceedingid = paperlist.proceedingid " .
@@ -633,7 +633,7 @@ function get_publishers() {
 function get_authors_by_paperid($paperid) {
   // query database for a list of categories
   $conn = db_connect();
-  $query = "select authorid from authorlist where authors='$paperid' order by ordering";
+  $query = "select authorid from authorlist where authors=" . sqlvalue($paperid, "N") . " order by ordering";
   $result = @mysql_query($query);
   if (!$result) {
     echo "get_authors: query \"$query\" failed.<br>\n";
@@ -657,7 +657,7 @@ function get_authors_by_paperid($paperid) {
 function get_comments_by_paper($paperid) {
   // query database for a list of categories
   $conn = db_connect();
-  $query = "select * from comments where paperid='$paperid' order by created,commentid desc";
+  $query = "select * from comments where paperid=" . sqlvalue($paperid, "N") . " order by created,commentid desc";
   $result = @mysql_query($query);
   if (!$result) {
     echo "get_comments: query \"$query\" failed.<br>\n";
@@ -705,7 +705,7 @@ function get_organisations() {
 function get_publisher_name($pubid) {
   // query database for the name for a publisher id, return e.g. "IOS Press, Amsterdam"
   $conn = db_connect();
-  $query = "select name, city from publisherinfo where publisherid = '$pubid'";
+  $query = "select name, city from publisherinfo where publisherid = " . sqlvalue($pubid, "N");
   $result = @mysql_query($query);
   if (!$result) {
     return FALSE;
@@ -730,7 +730,7 @@ function get_publisher_name($pubid) {
 function get_proceed_details($procid) {
   // query database for the name for an id, return array of details.
   $conn = db_connect();
-  $query = "select * from publisherinfo where proceedingid = '$procid'";
+  $query = "select * from publisherinfo where proceedingid = " . sqlvalue($procid, "N");
   $result = @mysql_query($query);
   if (!$result) {
     return FALSE;
@@ -774,7 +774,7 @@ function get_people() {
 
 function get_person_name($persid) {
   $conn = db_connect();
-  $query = "select title,firstname,lastname from people where personid = '$persid'";
+  $query = "select title,firstname,lastname from people where personid = " . sqlvalue($persid, "N");
   $result = @mysql_query($query);
   if (!$result) {
     return FALSE;
@@ -805,7 +805,7 @@ function get_person_name($persid) {
 
 function get_person($persid) {
   $conn = db_connect();
-  $query = "select * from people where personid = '$persid'";
+  $query = "select * from people where personid = " . sqlvalue($persid, "N");
   $result = @mysql_query($query);
   if (!$result) {
     return FALSE;
@@ -834,7 +834,7 @@ function get_paper($num) {
   }
 
   $conn = db_connect();
-  $query = "select * from papers where paperid ='" . $num . "'";
+  $query = "select * from papers where paperid = " . sqlvalue($num, "N");
   $result = @mysql_query($query);
   if (!$result) {
     echo "get_paper: query \"$query\" failed.<br>\n";
@@ -899,7 +899,7 @@ function update_paperfile_count($num) {
   }
 
   $conn = db_connect();
-  $query = "update paperfile set accessed = NOW(), accesses = accesses + 1 where fileid ='" . $num . "'";
+  $query = "update paperfile set accessed = NOW(), accesses = accesses + 1 where fileid = " . sqlvalue($num, "N");
   $result = @mysql_query($query);
   if (!$result) {
     echo "get_paper: query \"$query\" failed.<br>\n";
@@ -922,7 +922,7 @@ function update_accessed($table, $keyfield, $num) {
   }
 
   $conn = db_connect();
-  $query = "update $table set accessed = NOW(), accesses = accesses + 1 where $keyfield ='" . $num . "'";
+  $query = "update $table set accessed = NOW(), accesses = accesses + 1 where $keyfield = " . sqlvalue($num, "N");
   $result = @mysql_query($query);
   if (!$result) {
     echo "get_paper: query \"$query\" failed.<br>\n";
@@ -945,7 +945,7 @@ function update_modified($table, $keyfield, $num) {
   }
 
   $conn = db_connect();
-  $query = "update $table set modified = NOW() where $keyfield ='" . $num . "'";
+  $query = "update $table set modified = NOW() where $keyfield = " . sqlvalue($num, "N");
   $result = @mysql_query($query);
   if (!$result) {
     return FALSE;
@@ -986,7 +986,7 @@ function get_proceeding_last_modified($num) {
 
   $conn = db_connect();
   $query = "select MAX(papers.modified) as lastmod from papers,paperlist " .
-    "where paperlist.paperid = papers.paperid and paperlist.proceedingid = $num";
+    "where paperlist.paperid = papers.paperid and paperlist.proceedingid = " . sqlvalue($num, "N");
   $result = @mysql_query($query);
   if (!$result) {
     return FALSE;

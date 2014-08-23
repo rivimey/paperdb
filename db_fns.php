@@ -59,26 +59,25 @@ function db_result_to_array($result) {
 //--------------------------------------------------------------------------------------
 //  sqlvalue
 //
-//  Return "str" suitably formatted for a mysql query string, according
-//  to 'type': if "A" (alpha/string) then require single quotes, if numeric
-//  then no quotes and transform "" to null
+//  Return "str" -- untrusted data from a user -- suitably formatted for a
+//  mysql query string, according to 'type': if "A" (alpha/string) then require
+//  single quotes, if "N" then no quotes and transform "" to null
 //--------------------------------------------------------------------------------------
 
 function sqlvalue($str, $type = "A") {
   if ($type == "A") {
     if (is_numeric($str)) {
-      return "'" . strval($str) . "'";
+      $str = strval($str);
     }
-    else {
       return "'" . mysql_real_escape_string($str) . "'";
     }
-  }
-  else { // numeric, but if passed "" string then convert to SQL-null
-    if (is_string($str) && $str == "") {
+  if ($type == "N") {
+    if ($str == "") {
       return "null";
     }
     else {
-      return $str;
+      return mysql_real_escape_string(strval(intval($str)));
     }
   }
+  trigger_error("sqlvalue used on unknown type", E_USER_ERROR);
 }
