@@ -16,7 +16,7 @@ require_once("compat_fns.php");
 /* change calls with id= to calls with num= */
 if (isset($_GET['id']) || isset($_POST['id'])) {
 
-  // get the id value, which should be a paper number
+  // get the id value, which should be a file number
   $id = isset($_GET['id']) ? $_GET['id'] : $_POST['id'];
 
   // there should be a function number too...
@@ -29,10 +29,11 @@ if (isset($_GET['id']) || isset($_POST['id'])) {
 
   header("Location: http://" . $_SERVER['HTTP_HOST']
     . rtrim(dirname($_SERVER['PHP_SELF']), '/\\')
-    . "/" . $relative_url);
+    . "/" . $relative_url, TRUE, 301);
 
   header("Cache-Control: no-cache, must-revalidate"); // HTTP/1.1
   header("Expires: Mon, 26 Jul 1997 05:00:00 GMT"); // Date in the past
+  exit;
 }
 
 
@@ -44,24 +45,24 @@ session_start();
 
 if (!isset($_GET['num'])) {
   do_para("No file?");
-  $paper = "";
+  $file = "";
 }
 else {
   $num = $_GET['num'];
-  $paper = get_file_by_id($num);
+  $file = get_file_by_id($num);
 }
 
-if (is_array($paper)) {
+if (is_array($file)) {
   if ($maintain_stats) {
     update_paperfile_count($num);
   }
 
-  $contents = $paper['paper'];
-  $len = $paper['length'];
-  $md5 = $paper['md5'];
+  $contents = $file['paper'];
+  $len = $file['length'];
+  $md5 = $file['md5'];
   $new_md5 = md5($contents);
-  $filetype = $paper['filetype'];
-  $filename = $paper['filename'];
+  $filetype = $file['filetype'];
+  $filename = $file['filename'];
 
   if ($filetype == "HTML") {
     $t = "text/html";
@@ -85,7 +86,7 @@ if (is_array($paper)) {
   if ($new_md5 == $md5) {
     header("Content-Type: $t");
     header("Content-Length: $len");
-    if ($filetype == "HMTL") {
+    if ($filetype == "HTML") {
       header("Content-Disposition: inline");
     }
     elseif ($filetype == "PDF") {
