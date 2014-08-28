@@ -29,8 +29,9 @@ if ($f > 0 && $f < 3) {
     }
     $s = ord(strtolower($s));
     $e = ord(strtolower($e));
+    $title = "Author Index " . strtoupper(chr($s)) . " to " . strtoupper(chr($e));
 
-    do_html_header("Author Index " . strtoupper(chr($s)) . " to " . strtoupper(chr($e)), "index,follow");
+    do_html_header($title, array('robots' => 'all'));
 
     $authorlist = get_authors();
     if ($authorlist) {
@@ -74,7 +75,7 @@ if ($f > 0 && $f < 3) {
     $num = $_GET['num'];
 
     $author = get_person_name($num);
-    do_html_header("Papers that include $author as an Author", "index,nofollow");
+    do_html_header("Papers that include $author as an Author", array('robots' => 'all'));
     $papers = get_papers_by_author($num);
 
     echo "<b>Name:</b> $author<br>";
@@ -95,12 +96,12 @@ if ($f > 0 && $f < 3) {
     }
   }
   else {
-    do_html_header("Undefined function $f", "noindex,nofollow");
+    do_html_header("Undefined function $f", array('robots' => 'all'));
     echo "show_auth: Undefined function $f\n";
   }
 }
 else {
-  do_html_header("Undefined op $f", "nofollow");
+  do_html_header("Undefined op $f", array('robots' => 'all'));
   echo "show_auth: Undefined op $f\n";
 }
 

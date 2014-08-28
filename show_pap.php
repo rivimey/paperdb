@@ -59,7 +59,7 @@ if ($f > 0 && $f < 6 && (isset($_GET['num']) || isset($_POST['num']))) {
     header("Content-Disposition: inline");
   }
   else {
-    do_html_header("Paper Details", "index,follow");
+    do_html_header("Paper Details", array('robots' => 'all', 'paper' => $paper));
   }
 
   if ($maintain_stats and $f >= 1 and $f <= 5) {
@@ -85,7 +85,7 @@ if ($f > 0 && $f < 6 && (isset($_GET['num']) || isset($_POST['num']))) {
   }
 }
 else {
-  do_html_header("Paper details", "nofollow");
+  do_html_header("Paper details", array('robots' => 'all'));
   do_para("show_pap: Unimplemented function");
 }
 

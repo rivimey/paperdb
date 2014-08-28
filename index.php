@@ -17,7 +17,7 @@ require_once('paper_fns.php');
 
 // We need sessions, so start one
 session_start();
-do_html_header("Paper and Proceedings Database Server", "index,follow");
+do_html_header("Paper and Proceedings Database Server", array('robots' => 'all'));
 
 do_para("Welcome to the WoTUG conference proceedings database. You can use it to display the titles,\n"
   . "abstracts and in some cases the full text of the papers that have been presented at the WoTUG\n"

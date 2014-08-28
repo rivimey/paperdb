@@ -73,7 +73,7 @@ if ($f > 0 && $f < 3) {
     $num = $_GET['num'];
 
     $editor = get_person_name($num);
-    do_html_header("Proceedings that include $editor as an Editor", "nofollow");
+    do_html_header("Proceedings that include $editor as an Editor", array('robots' => 'all'));
     $proceedings = get_proceedings_by_editor($num);
 
     echo "<b>Name:</b> $editor<br>";
@@ -92,12 +92,12 @@ if ($f > 0 && $f < 3) {
     }
   }
   else {
-    do_html_header("Undefined function $f", "nofollow");
+    do_html_header("Undefined function $f", array('robots' => 'all'));
     echo "show_editor: Undefined function $f\n";
   }
 }
 else {
-  do_html_header("Undefined op $f", "nofollow");
+  do_html_header("Undefined op $f", array('robots' => 'all'));
   echo "show_editor: Undefined op $f\n";
 }
 

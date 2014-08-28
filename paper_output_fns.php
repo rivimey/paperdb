@@ -23,41 +23,39 @@ require_once("file_output_fns.php");
 function do_paper_metatags($title, $paper) {
   $paperid = $paper["paperid"];
 
-  echo "<meta name=\"DC.Language\" content=\"en\" />";
-  echo "<meta name=\"DC.Title\" content=\"" .  $title . "\" />";
+  echo "<meta name=\"DC.Language\" content=\"en\" />\n";
+  echo "<meta name=\"DC.Title\" content=\"" .  $title . "\" />\n";
   foreach ($authorlist as $item) {
     $author = make_name($item, 6);
-    echo "<meta name=\"DC.contributor\" content=\"" .  $author . "\" />";
+    echo "<meta name=\"DC.contributor\" content=\"" .  $author . "\" />\n";
   }
-  echo "<meta name=\"citation_title\" content=\"" .  $title . "\" />";
+  echo "<meta name=\"citation_title\" content=\"" .  $title . "\" />\n";
   $authorlist = get_authors_by_listid($paper["paperid"]);
   foreach ($authorlist as $item) {
     $author = make_name($item, 6);
-    echo "<meta name=\"citation_author\" content=\"" .  $author . "\" />";
+    echo "<meta name=\"citation_author\" content=\"" .  $author . "\" />\n";
   }
-  echo "<meta name=\"citation_access\" content=\"all\" />";
-  echo "<meta name=\"og:type\" content=\"article\" />";
+  echo "<meta name=\"citation_access\" content=\"all\" />\n";
+  echo "<meta name=\"og:type\" content=\"article\" />\n";
 
   $proceedings = get_proceedings_by_paperid($paperid);
   if (is_array($proceedings)) {
     foreach ($proceedings as $proc) {
       $pages = get_paperinfo_by_paperid_and_procid($paperid, $proc["proceedingid"]);
-      echo "<meta name=\"citation_journal\" content=\"" .  $proc['title'] . "\">";
-      echo "<meta name=\"citation_firstpage\" content=\"" .  $pages["firstpage"] . "\">";
-      echo "<meta name=\"citation_publication_date\" content=\"" . $proc["pubyear"]  . "\">";
+      echo "<meta name=\"citation_journal\" content=\"" .  $proc['title'] . "\">\n";
+      echo "<meta name=\"citation_firstpage\" content=\"" .  $pages["firstpage"] . "\">\n";
+      echo "<meta name=\"citation_publication_date\" content=\"" . $proc["pubyear"]  . "\">\n";
     }
-    echo "</tr>\n";
   }
 }
 
-//--------------------------------------------------------------------------------------
-//   display_paper_link
-//
-//  Display a paper as a title and link to the paper, using paperinfo(firstpg,lastpg)
-// to calculate the number of pages in the article if possible.
-//
-//--------------------------------------------------------------------------------------
-
+/**
+ *  Display a paper as a title and link to the paper, using paperinfo(firstpg,lastpg)
+ * to calculate the number of pages in the article if possible.
+ *
+ * @param $paperinfo
+ * @param $paper
+ */
 function display_paper_link($paperinfo, $paper) {
   // Get the names of the authors of this paper.
   $auths = "";
@@ -106,14 +104,12 @@ function display_paper_link($paperinfo, $paper) {
   echo "</li>\n";
 }
 
-
-//--------------------------------------------------------------------------------------
-//   display_paper_verbose
-//
-//  Display a paper in a table format for use in the long book list page
-//
-//--------------------------------------------------------------------------------------
-
+/**
+ * Display a paper in a table format for use in the long book list page.
+ *
+ * @param $paper
+ * @param bool $proceedingstoo
+ */
 function display_paper_verbose($paper, $proceedingstoo = FALSE) {
   // display all details about this proceeding
   // Get the names of the authors of this paper.
@@ -201,15 +197,12 @@ function display_paper_verbose($paper, $proceedingstoo = FALSE) {
   }
 }
 
-
-//--------------------------------------------------------------------------------------
-//   display_paper_details
-//
-//  Display a paper with Authors, abstract etc. and details of the files (PS, PDF etc)
-// stored.
-//
-//--------------------------------------------------------------------------------------
-
+/**
+ * Display a paper with Authors, abstract etc. and details of the files (PS, PDF etc)
+ * stored.
+ *
+ * @param $paper
+ */
 function display_paper_details($paper) {
   if (is_array($paper)) {
     do_para("<b>" . $paper["title"] . "</b>");

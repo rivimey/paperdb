@@ -54,7 +54,7 @@ if ($f > 0 && $f < 7) {
     $num = isset($_GET['num']) ? $_GET['num'] : $_POST['num'];
   }
   else {
-    do_html_header("Refer", "noindex,nofollow");
+    do_html_header("Refer", array('robots' => 'all'));
     echo "show_proc: $f requires an id number\n";
     do_html_footer();
     exit;
@@ -78,12 +78,12 @@ if ($f > 0 && $f < 7) {
   }
 
   if ($f == 1) { // list papers in short html format
-    do_html_header("Proceedings details", "index,nofollow");
+    do_html_header("Proceedings details", array('robots' => 'all'));
     $book = get_proceeding($num);
     display_book_details($book, 0);
   }
   elseif ($f == 2) { // list BibTeX records for all papers
-    do_html_header("BibTeX Proceedings details", "index,nofollow");
+    do_html_header("BibTeX Proceedings details", array('robots' => 'all'));
     if ($papers == FALSE) {
       echo $nopapers . $eol;
     }
@@ -96,7 +96,7 @@ if ($f > 0 && $f < 7) {
     }
   }
   elseif ($f == 3) { // list Refer records for all papers
-    do_html_header("Refer Proceedings details", "index,nofollow");
+    do_html_header("Refer Proceedings details", array('robots' => 'all'));
     if ($papers == FALSE) {
       echo $nopapers . $eol;
     }
@@ -107,7 +107,7 @@ if ($f > 0 && $f < 7) {
     }
   }
   elseif ($f == 4) { // list proceedings in long html format with papers
-    do_html_header("Proceedings details", "index,nofollow");
+    do_html_header("Proceedings details", array('robots' => 'all'));
     $book = get_proceeding($num);
     display_book_details($book, 1);
   }
@@ -151,7 +151,7 @@ if ($f > 0 && $f < 7) {
 
 }
 else {
-  do_html_header("Refer", "noindex,nofollow");
+  do_html_header("Refer", array('robots' => 'all'));
   echo "show_proc: unimplemented function $f\n";
 }
 
