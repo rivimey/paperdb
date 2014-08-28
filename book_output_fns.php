@@ -93,10 +93,6 @@ function display_book_details($proceeding, $verb) {
 
     echo "<b>Title:</b> ";
     echo $proceeding["title"];
-    // if logged in as admin, show add, delete, edit cat links
-    if (session_is_registered("admin_user")) {
-      do_html_url("edit_proceeding.php?f=1&amp;num=" . $proceeding["proceedingid"], " Edit");
-    }
 
     echo "<br>\n";
     if (!empty($proceeding["subtitle"])) {

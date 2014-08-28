@@ -137,18 +137,6 @@ if ($f > 0 && $f < 7) {
     }
     exit;
   }
-
-  // if logged in as admin, show links
-  if (session_is_registered("admin_user")) {
-    echo "<p>Links:</p><ul><li>";
-    do_html_url("insert_papers_form.php", "Add a Paper");
-    echo "<li>";
-    do_html_url("edit_proceeding.php?f=1&amp;num=$num", "Edit Proceeding");
-    echo "<li>";
-    do_html_url("admin.php", "Back to administration menu");
-    echo "</ul>";
-  }
-
 }
 else {
   do_html_header("Refer", "noindex,nofollow");
@@ -156,4 +144,3 @@ else {
 }
 
 do_html_footer();
-

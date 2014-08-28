@@ -89,18 +89,4 @@ else {
   do_para("show_pap: Unimplemented function");
 }
 
-// if logged in as admin, show add, delete, edit cat links
-if (session_is_registered("admin_user")) {
-  echo "<p>Links:</p><ul><li>";
-  do_html_url("edit_paper.php?f=2&amp;num=$num", "Add File to This Paper");
-  echo "<li>";
-  do_html_url("edit_paper.php?f=1&amp;num=$num", "Edit This Paper");
-  echo "<li>";
-  do_html_url("insert_papers_form.php", "Add New Paper,");
-  echo "<li>";
-  do_html_url("insert_person_form.php", "Add New Person,");
-  echo "</ul>";
-}
-
 do_html_footer();
-

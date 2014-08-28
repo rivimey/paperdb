@@ -189,12 +189,7 @@ function display_paper_verbose($paper, $proceedingstoo = FALSE) {
           $flinks .= ", ";
         }
       }
-      if (session_is_registered("admin_user")) {
-        $flinks .= " <a href=\"edit_paper.php?f=2&amp;num=" . $paper["paperid"] . "\">[Add file...]</a></span>\n";
-      }
-      else {
-        $flinks .= "</span>";
-      }
+      $flinks .= "</span>";
       echo "$flinks</td></tr>\n";
     }
     echo "</table>\n";

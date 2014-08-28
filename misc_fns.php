@@ -11,7 +11,7 @@
  */
 
 require_once("compat_fns.php");
-require_once("user_auth_fns.php");
+
 
 /**
  * Used by many routines to create a name from a person db record using
@@ -49,9 +49,6 @@ function make_name($person, $style) {
     $res .= $person["lastname"] . ", " . $ttl . $person["firstname"];
   }
 
-  if (check_admin_user() && ($style & 2) == 0) {
-    $res .= "<a href=\"edit_person.php?f=1&amp;num=" . $person['personid'] . "\">^</a>";
-  }
   return $res;
 }
 

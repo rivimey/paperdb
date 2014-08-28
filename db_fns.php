@@ -64,7 +64,7 @@ function db_result_to_array($result) {
 //  single quotes, if "N" then no quotes and transform "" to null
 //--------------------------------------------------------------------------------------
 
-function sqlvalue($str, $type = "A") {
+function sqlvalue($str, $type) {
   if ($type == "A") {
     if (is_numeric($str)) {
       $str = strval($str);

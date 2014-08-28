@@ -81,14 +81,6 @@ if ($f > 0 && $f < 3) {
 
     foreach ($proceedings as $proceeding) {
       display_proceeding_details($proceeding, FALSE);
-
-      // if logged in as admin, show edit links
-      if (session_is_registered("admin_user")) {
-        $proceedingid = $proceeding["proceedingid"];
-        echo "<p align=right><small>";
-        do_html_url("edit_proceeding.php?f=1&amp;num=$proceedingid", "Edit Proceeding");
-        echo "</small></p>";
-      }
     }
   }
   else {

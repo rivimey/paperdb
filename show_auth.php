@@ -82,16 +82,6 @@ if ($f > 0 && $f < 3) {
 
     foreach ($papers as $paper) {
       display_paper_verbose($paper, TRUE);
-
-      // if logged in as admin, show edit links
-      if (session_is_registered("admin_user")) {
-        $paperid = $paper["paperid"];
-        echo "<p align=right><small>";
-        do_html_url("edit_paper.php?f=2&amp;num=$paperid", "Add File to Paper");
-        echo "<br>";
-        do_html_url("edit_paper.php?f=1&amp;num=$paperid", "Edit Paper");
-        echo "</small></p>";
-      }
     }
   }
   else {
