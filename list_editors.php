@@ -15,7 +15,7 @@ require_once("html_output_fns.php");
 
 session_start();
 
-do_html_header("List all Editors", "none");
+do_html_header("List all Editors", array('robots' => 'all'));
 
 do_para("Please select the link by the initial letter of the " .
   "editor's surname, or All to list every editor.");

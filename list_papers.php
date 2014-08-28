@@ -15,7 +15,7 @@ require_once("html_output_fns.php");
 
 session_start();
 
-do_html_header("List all Papers", "all");
+do_html_header("List all Papers", array('robots' => 'all'));
 
 if (isset($HTTP_POST_VARS['SortOrder'])) {
   $SortOrder = $HTTP_POST_VARS['SortOrder'];

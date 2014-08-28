@@ -21,18 +21,26 @@ require_once("compat_fns.php");
 //
 //------------------------------------------------------------------------------------------------------------------------------
 
-function do_html_header($title, $robots = 'ALL', $paper = null) {
+function do_html_header($title, $options = array()) {
   global $siteName, $defaultCharset;
 
-?><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
-<head>
-  <title><?= $title ?> - <?= $siteName ?></title>
-  <meta name="robots" content="<?= $robots ?>">
-  <meta http-equiv="Content-Type" content="text/html; charset=$defaultCharset">
-<?php
-  if ($paper) {
-    do_paper_metatags($title, $paper);
+  $defaultOptions = array(
+    'robots' => 'ALL',
+    'paper' => null,
+    'charset' => $defaultCharset,
+    'sitename' => $siteName,
+    'content' => 'text/html',
+  );
+  $options = array_merge($defaultOptions, $options);
+
+  echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">";
+  echo "<html><head>";
+  echo "<title>" . $options['$title'] . " - " . $options['sitename'] . "</title>";
+  echo "<meta name=\"robots\" content=\"" . $options['robots'] . "\">";
+  echo "<meta http-equiv=\"Content-Type\" content=\"" . $options['content'] . "; charset=" . $options['charset'] . "\">";
+
+  if ($options['paper']) {
+    do_paper_metatags($title, $options['paper']);
   }
 
   // do local header stuff and any sidebars, etc. Minimum is "</head><body>"
@@ -42,8 +50,8 @@ function do_html_header($title, $robots = 'ALL', $paper = null) {
   else {
     echo "</head><body>\n";
   }
-  if ($title) {
-    do_html_heading($title);
+  if ($options['$title']) {
+    do_html_heading($options['$title']);
   }
 }
 

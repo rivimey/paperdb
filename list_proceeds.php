@@ -128,6 +128,7 @@ function text_headers($name) {
 //-----------------------------------------------------------------------------
 
 session_start();
+global $siteName, $defaultCharset;
 
 $f = isset($_GET['f']) ? $_GET['f'] : $_POST['f'];
 
@@ -136,29 +137,29 @@ if ($f > 0 && $f < 6) {
     list_proceedings();
   }
   elseif ($f == 2) { // list of proceedings, long-format html BibTeX
-    do_html_header("List Proceedings BibTeX", "noindex");
+    do_html_header("List Proceedings BibTeX", array('robots' => 'all'));
     text_headers("");
     list_proceedings_bibtex(FALSE);
   }
   elseif ($f == 3) { // list of proceedings, long-format html BibTeX
-    do_html_header("List Proceedings Refer", "noindex");
+    do_html_header("List Proceedings Refer", array('robots' => 'all'));
     text_headers("");
     list_proceedings_refer(FALSE);
   }
   elseif ($f == 4) { // list of proceedings, long-format plain text BibTeX
-    header("Content-Type: text/plain; charset=ISO-8859-1");
+    header("Content-Type: text/plain; charset=$defaultCharset");
     text_headers("wotug.bib");
     list_proceedings_bibtex(TRUE);
   }
   elseif ($f == 5) { // list of proceedings, long-format plain text Refer
-    header("Content-Type: text/plain; charset=ISO-8859-1");
+    header("Content-Type: text/plain; charset=$defaultCharset");
     text_headers("wotug.rf");
     list_proceedings_refer(TRUE);
   }
 
 }
 else {
-  do_html_header("Refer", "none");
+  do_html_header("Refer", array('robots' => 'all'));
   echo "list_proceeds: unimplemented function $f\n";
 }
 
@@ -166,5 +167,3 @@ else {
 if (!($f == 4 || $f == 5)) {
   do_html_footer();
 }
-
-?>

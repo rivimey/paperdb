@@ -19,7 +19,7 @@ require_once("paper_output_fns.php");
 session_start();
 db_connect(); // for mysql_real_escape_string()
 
-do_html_header("Search results");
+do_html_header("Search results", array('robots' => 'all'));
 
 if (isset($_POST['goButton']) && $_POST['goButton'] = "Search") {
 

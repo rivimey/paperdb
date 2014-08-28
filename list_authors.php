@@ -15,7 +15,7 @@ require_once("html_output_fns.php");
 
 session_start();
 
-do_html_header("List all Authors", "none");
+do_html_header("List all Authors", array('robots' => 'all'));
 
 do_para("Please select the link by the initial letter of the " .
   "author's surname, or All to list every author.");
