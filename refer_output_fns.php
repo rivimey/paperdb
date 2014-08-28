@@ -11,7 +11,6 @@
  */
 
 require_once("compat_fns.php");
-require_once("user_auth_fns.php");
 require_once("entities.php");
 
 //-----------------------------------------------------------------------------
