@@ -13,14 +13,20 @@
 require_once("/etc/paperdb/config.php");
 require_once("compat_fns.php");
 
-//------------------------------------------------------------------------------------------------------------------------------
-//  do_html_header
-//
-//  Write out the generic stuff that each page should have. Mostly, this is 
-// going to be related to the rest of the website rather than specific to paperdb.
-//
-//------------------------------------------------------------------------------------------------------------------------------
-
+/**
+ *  Write out the generic stuff that each page should have. Mostly, this is
+ * going to be related to the rest of the website rather than specific to paperdb.
+ *
+ * @param $title
+ *   The title of this page. Used to set both the HTML title and an H1 header.
+ * @param array $options
+ *   An array of other values that can be set, with default values.
+ *   - robots, used to set the metatag by that name.
+ *   - paper, a reference to a paper object, used to set paper-specific metatags
+ *   - charset, the charset to use, if different from defaultCharset
+ *   - sitename, the site name to use, if different from siteName
+ *   - content, the content-type definition, if not text/html
+ */
 function do_html_header($title, $options = array()) {
   global $siteName, $defaultCharset;
 
@@ -67,17 +73,22 @@ function do_html_footer() {
 }
 
 /**
- * Write a heading
+ * Write an HTML heading out.
  *
  * @param $heading
+ *   The text of the heading.
+ * @param string $level
+ *   The heading-tag level (1..6)
  */
 function do_html_heading($heading, $level = "1") {
   echo "<h$level>$heading</h$level>\n";
 }
 
 /**
- * Shortcut to write an html paragraph
+ * Shortcut to write an html paragraph.
+ *
  * @param $text
+ * @param string $attrs
  */
 function do_para($text, $attrs = "") {
   if (!empty($attrs) > "") {
@@ -96,7 +107,6 @@ function do_html_url($url, $name) {
   echo "<a href=\"$url\">$name</a>\n";
 }
 
-
 /**
  * Write a Button tag with the indicated url
  *
@@ -107,15 +117,15 @@ function display_button($target, $alt) {
   echo "<button > <a href=\"/paperdb/$target\">$alt</a></button>\n";
 }
 
-
 /**
- * Write an Input tag
+ * Write an Input tag with a reference to an image, which must be 50x135 px.
  *
  * @param $image
+ *   The image to use. Must be a gif.
  * @param $alt
+ *   The alt-text for the image.
  */
 function display_form_button($image, $alt) {
-  echo "<input type = image src=\"images/$image" . ".gif\"
-           alt=\"$alt\" border=0 height = 50 width = 135>";
+  echo "<input type=\"image\" src=\"images/$image" . ".gif\"
+           alt=\"$alt\" border=\"0\" height=\"50\" width=\"135\">";
 }
-
