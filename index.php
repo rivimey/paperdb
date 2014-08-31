@@ -26,7 +26,7 @@ do_para("Please select one of the following:");
 
 echo "<ul>\n";
 echo "<li>Please choose a proceeding to display: ";
-$proc_array = get_proceedings(0);
+$proc_array = get_proceedings(FALSE);
 
 // list of possible proceedings comes from database
 echo "<form method=\"get\" action=\"show_proc.php\">\n";

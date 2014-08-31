@@ -52,7 +52,7 @@ function get_lastmod($lm) {
 function list_proceedings() {
   do_html_header("List all Proceedings", "noindex");
 
-  $proc_array = get_proceedings(1);
+  $proc_array = get_proceedings(TRUE);
   if ($proc_array) {
     echo "<table cellpadding=\"2\">\n";
     echo "<tr><th>Title</th><th>Year</th><th colspan=\"2\">Formats</th></tr>\n";
@@ -87,7 +87,7 @@ function list_proceedings_bibtex($plain) {
   $lm = get_allpapers_last_modified();
   header("Last-Modified: " . get_lastmod($lm));
 
-  $proc_array = get_proceedings(1);
+  $proc_array = get_proceedings(TRUE);
   foreach ($proc_array as $thisproc) {
     $paper_array = get_papers_by_proceedingid($thisproc["proceedingid"]);
     foreach ($paper_array as $thispaper) {
@@ -107,7 +107,7 @@ function list_proceedings_refer($plain) {
   $lm = get_allpapers_last_modified();
   header("Last-Modified: " . get_lastmod($lm));
 
-  $proc_array = get_proceedings(1);
+  $proc_array = get_proceedings(TRUE);
   foreach ($proc_array as $thisproc) {
     $paper_array = get_papers_by_proceedingid($thisproc["proceedingid"]);
     foreach ($paper_array as $thispaper) {
