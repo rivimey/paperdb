@@ -49,6 +49,17 @@ if (!isset($_GET['num'])) {
 }
 else {
   $num = $_GET['num'];
+
+    $href = get_file_redirect_by_id($num);
+    if ($href) {
+        // This file has been replaced; permanently redirect to the new
+        // location.
+        // (This assumes href starts with a slash. Doing a proper URL join
+        // in PHP is just too painful to generalise it.)
+        header("Location: http://" . $_SERVER['HTTP_HOST'] . $href, true, 301);
+        exit;
+    }
+
   $file = get_file_by_id($num);
 }
 
@@ -63,21 +74,17 @@ if (is_array($file)) {
   $new_md5 = md5($contents);
   $filetype = $file['filetype'];
   $filename = $file['filename'];
+  
+  $mimetypes = array(
+    "HTML" => "text/html",
+    "PS" =>  "application/ps",
+    "PDF" => "application/pdf",
+    "PPT" => "application/vnd.ms-powerpoint",
+    "MSW" => "application/msword",
+  );
 
-  if ($filetype == "HTML") {
-    $t = "text/html";
-  }
-  elseif ($filetype == "PS") {
-    $t = "application/ps";
-  }
-  elseif ($filetype == "PDF") {
-    $t = "application/pdf";
-  }
-  elseif ($filetype == "PPT") {
-    $t = "application/vnd.ms-powerpoint";
-  }
-  elseif ($filetype == "MSW") {
-    $t = "application/msword";
+  if (!empty($mimetypes[$filetype])) {
+    $t = $mimetypes[$filetype];
   }
   else {
     $t = "application/octet-stream";

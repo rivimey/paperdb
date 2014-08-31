@@ -93,8 +93,9 @@ function display_paper_link($paperinfo, $paper) {
     echo "&nbsp;" . $auths . ", $flinks ";
   }
 
+  display_file_links($paper, false, " <span>[", "]</span>");
   // if logged in as admin, show add paper link
-  if (session_is_registered("admin_user")) {
+  if (check_admin_user()) {
     echo '[';
     do_html_url("edit_paper.php?f=2&amp;num=" . $paper["paperid"], "Add file,");
     do_html_url("edit_paper.php?f=1&amp;num=" . $paper["paperid"], "Edit paper");
@@ -114,7 +115,8 @@ function display_paper_verbose($paper, $proceedingstoo = FALSE) {
   // display all details about this proceeding
   // Get the names of the authors of this paper.
   $auths = "";
-  if (is_array($paper) && is_array($authorlist = get_authors_by_listid($paper["paperid"]))) {
+  if (is_array($paper) &&
+      is_array($authorlist = get_authors_by_listid($paper["paperid"]))) {
     $auths = make_namelist($authorlist, ", ", "No authors recorded.", 1);
   }
   if (is_array($paper)) {
@@ -128,7 +130,7 @@ function display_paper_verbose($paper, $proceedingstoo = FALSE) {
     <tr>
       <td width="100">Title:</td>
       <td colspan="3"><b><?= $paper["title"] ?></b>
-        <?php  if (session_is_registered("admin_user")) {
+        <?php  if (check_admin_user()) {
           do_html_url("edit_paper.php?f=1&amp;num=$num", "Edit");
         }
         ?>
@@ -172,27 +174,7 @@ function display_paper_verbose($paper, $proceedingstoo = FALSE) {
         echo "</tr>\n";
       }
     }
-    $flinks = "";
-    $files = get_paper_file_ids($paper["paperid"]);
-    if (is_array($files) || session_is_registered("admin_user")) {
-      $flinks = "<tr><td valign=\"top\">Files:</td><td colspan=\"3\"><span>";
-      $num = count($files) - 1;
-      for ($count = 0; $count <= $num; $count++) {
-        $fid = $files[$count]["fileid"];
-        $fty = $files[$count]["filetype"];
-        $flinks .= "<a href=\"send_file.php?num=$fid\">$fty</a>";
-        if ($count < $num) {
-          $flinks .= ", ";
-        }
-      }
-      if (session_is_registered("admin_user")) {
-        $flinks .= " <a href=\"edit_paper.php?f=2&amp;num=" . $paper["paperid"] . "\">[Add file...]</a></span>\n";
-      }
-      else {
-        $flinks .= "</span>";
-      }
-      echo "$flinks</td></tr>\n";
-    }
+    display_file_links($paper, true, "<tr><td valign=\"top\">Files:</td><td colspan=\"3\"><span>", "</span></td></tr>");
     echo "</table>\n";
   }
 }
@@ -231,12 +213,38 @@ function display_paper_details($paper) {
     else {
       do_para("<i>[There are no proceedings associated with this paper.]</i>");
     }
-    display_file_details($paper);
+
+    display_file_links($paper, TRUE, "<b>Files:</b>\n");
 
     do_para("<b>This record in other formats:</b>");
     echo "Web page: <a href=\"show_pap.php?f=2&amp;num=" . $paper["paperid"] . "\">BibTEX</a>, \n";
     echo "<a href=\"show_pap.php?f=3&amp;num=" . $paper["paperid"] . "\">Refer</a><br>\n";
     echo "Plain text: <a href=\"show_pap.php?f=4&amp;num=" . $paper["paperid"] . "\">BibTEX</a>, \n";
     echo "<a href=\"show_pap.php?f=5&amp;num=" . $paper["paperid"] . "\">Refer</a><br>\n";
+  }
+}
+
+
+//--------------------------------------------------------------------------------------
+//   itemtype_label
+//
+//  Return a human-readable equivalent of an itemtype. The result is pluralisable by adding "s".
+//
+//--------------------------------------------------------------------------------------
+
+function itemtype_label($itemtype) {
+  $lookup = array(
+    "FRINGE" => "Fringe presentation",
+    "KEYNOTE" => "Keynote presentation",
+    "ENDNOTE" => "Endnote presentation",
+    "WORKSHOP" => "Workshop",
+    "PAPER" => "Paper",
+  );
+
+  if (!empty($lookup[$itemtype])) {
+    return $lookup[$itemtype];
+  }
+  else {
+    return "Paper";
   }
 }

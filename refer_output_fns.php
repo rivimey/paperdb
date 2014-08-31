@@ -163,46 +163,24 @@ function do_refer_text($paper, $proc) {
 //
 //-----------------------------------------------------------------------------
 
-function to_bibtex_month($month) {
-  if ($month == "1") {
-    return "jan";
-  }
-  else if ($month == "2") {
-    return "jan";
-  }
-  else if ($month == "3") {
-    return "feb";
-  }
-  else if ($month == "4") {
-    return "mar";
-  }
-  else if ($month == "5") {
-    return "may";
-  }
-  else if ($month == "6") {
-    return "jun";
-  }
-  else if ($month == "7") {
-    return "jul";
-  }
-  else if ($month == "8") {
-    return "aug";
-  }
-  else if ($month == "9") {
-    return "sep";
-  }
-  else if ($month == "10") {
-    return "oct";
-  }
-  else if ($month == "11") {
-    return "nov";
-  }
-  else if ($month == "12") {
-    return "dec";
-  }
-  else {
-    return $month;
-  }
+function to_bibtex_month($month)
+{
+  $months = array(
+    "1" => "jan",
+    "2" => "feb",
+    "3" => "mar",
+    "4" => "apr",
+    "5" => "may",
+    "6" => "jun",
+    "7" => "jul",
+    "8" => "aug",
+    "9" => "sep",
+    "10" => "oct",
+    "11" => "nov",
+    "12" => "dec",
+  );
+
+  return $months[$month];
 }
 
 function do_bibtex_html($paper, $proc) {

@@ -72,7 +72,8 @@ function get_proceedingid_for_paper($paperid) {
 function get_paperinfo_by_proceedingid($procid) {
   // query database for a list of papers in this proceeding
   $conn = db_connect();
-  $query = "select * from paperlist where proceedingid ='$procid' order by firstpage";
+  // Sort papers with no page number (e.g. fringe presentations) at the end.
+  $query = "select l.* from paperlist l, papers p where l.paperid=p.paperid and l.proceedingid = " . sqlvalue($procid, "N") . " order by p.itemtype, ifnull(l.firstpage, 99999), l.paperid";
   $result = @mysql_query($query);
   if (!$result) {
     echo "get_paperinfo_by_proceedingid: query \"$query\" failed.<br>\n";
@@ -370,6 +371,36 @@ function get_proceeding($num) {
 }
 
 //--------------------------------------------------------------------------------------
+//  get_paper_links
+//
+// Return array of links for a paper.
+//
+//--------------------------------------------------------------------------------------
+
+function get_paper_links($num, $verbose = FALSE) {
+  // query database for a proceeding
+  $conn = db_connect();
+  $query = "select title, filetype, href from paperlink " .
+    "where paperid = " . sqlvalue($num, "N");
+  if (!$verbose) {
+    $query .= " and verbose = 0";
+  }
+  $query .= " order by ordering";
+
+  $result = @mysql_query($query);
+  if (!$result) {
+    echo "get_paper_links: query \"$query\" failed.<br>\n";
+    echo mysql_errno() . ": " . mysql_error() . "<br>\n";
+    return FALSE;
+  }
+  $num = @mysql_num_rows($result);
+  if ($num == 0) {
+    return FALSE;
+  }
+  return db_result_to_array($result);
+}
+
+//--------------------------------------------------------------------------------------
 //  get_paper_file_ids
 //
 // Return 
@@ -423,6 +454,30 @@ function get_file_by_id($num) {
   }
   $result = @mysql_fetch_array($result);
   return $result;
+}
+
+//--------------------------------------------------------------------------------------
+//  get_file_redirect_by_id
+//
+// Given a fileid, if that file's been replaced by a link, return the (relative) URL to redirect to. If it hasn't, return false.
+//
+//--------------------------------------------------------------------------------------
+
+function get_file_redirect_by_id($num) {
+  $conn = db_connect();
+  $query = "select l.href from oldpaperfile o, paperlink l where o.linkid = l.linkid and o.fileid = " . sqlvalue($num, "N");
+  $result = @mysql_query($query);
+  if (!$result) {
+    echo "get_file_redirect_by_id: query failed.<br>\n";
+    echo mysql_errno() . ": " . mysql_error() . "<br>\n";
+    return FALSE;
+  }
+  $num = @mysql_num_rows($result);
+  if ($num == 0) {
+    return FALSE;
+  }
+  $result = @mysql_fetch_array($result);
+  return $result["href"];
 }
 
 //--------------------------------------------------------------------------------------

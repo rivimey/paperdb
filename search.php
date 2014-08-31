@@ -89,7 +89,7 @@ if (isset($_POST['goButton']) && $_POST['goButton'] = "Search") {
     reset($tables);
     $tablestr = "";
     $done = FALSE;
-    while (!$done) {
+    do {
       $tablename = key($tables);
       $tablestr .= "$tablename";
 
@@ -97,10 +97,7 @@ if (isset($_POST['goButton']) && $_POST['goButton'] = "Search") {
       if (!$done) {
         $tablestr .= ",";
       }
-    }
-    while (!$done) {
-      ;
-    }
+    } while (!$done);
   }
 
   // read the where array and turn it into a series of bracketed
@@ -188,46 +185,14 @@ if (isset($_POST['goButton']) && $_POST['goButton'] = "Search") {
     echo "<tr>";
     echo "<td>\n";
     echo "<select name=\"what[$i]\">\n";
-    echo "<option value=\"1\"";
-    if ($w == 1) {
-      echo " selected";
-    }
-    echo ">Title</option>\n";
-    echo "<option value=\"2\"";
-    if ($w == 2) {
-      echo " selected";
-    }
-    echo ">Author Surname</option>\n";
-    echo "<option value=\"3\"";
-    if ($w == 3) {
-      echo " selected";
-    }
-    echo ">Author Firstname</option>\n";
-    echo "<option value=\"4\"";
-    if ($w == 4) {
-      echo " selected";
-    }
-    echo ">Abstract</option>\n";
-    echo "<option value=\"5\"";
-    if ($w == 5) {
-      echo " selected";
-    }
-    echo ">Ref No</option>\n";
-    echo "<option value=\"6\"";
-    if ($w == 6) {
-      echo " selected";
-    }
-    echo ">Pub. Date</option>\n";
-    echo "<option value=\"7\"";
-    if ($w == 7) {
-      echo " selected";
-    }
-    echo ">ISBN</option>\n";
-    echo "<option value=\"8\"";
-    if ($w == 8) {
-      echo " selected";
-    }
-    echo ">Has File Attachments</option>\n";
+    echo "<option value=\"1\""; if ($w == 1) echo " selected"; echo ">Title</option>\n"; 
+    echo "<option value=\"2\""; if ($w == 2) echo " selected"; echo ">Author Surname</option>\n";  
+    echo "<option value=\"3\""; if ($w == 3) echo " selected"; echo ">Author Firstname</option>\n"; 
+    echo "<option value=\"4\""; if ($w == 4) echo " selected"; echo ">Abstract</option>\n"; 
+    echo "<option value=\"5\""; if ($w == 5) echo " selected"; echo ">Ref No</option>\n"; 
+    echo "<option value=\"6\""; if ($w == 6) echo " selected"; echo ">Pub. Date</option>\n";
+    echo "<option value=\"7\""; if ($w == 7) echo " selected"; echo ">ISBN</option>\n";
+    echo "<option value=\"8\""; if ($w == 8) echo " selected"; echo ">Has File Attachments</option>\n"; 
     echo "</select>";
     echo "</td><td><input type=\"text\" name=\"text[$i]\" size=\"60\" maxlength=\"120\" value=\"" . htmlentities($v) . "\"></td>\n";
   }

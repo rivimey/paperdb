@@ -125,15 +125,25 @@ function display_book_details($proceeding, $verb) {
       echo $proceeding["issn"] . "<br>\n";
     }
 
-    echo "<b>Papers:</b>\n";
     if ($papers != FALSE) {
       if ($verb) {
+        $lasttype = "";
         foreach ($papers as $paperinfo) {
           $paper = get_paper($paperinfo["paperid"]);
+          if ($paper["itemtype"] != $lasttype) {
+            // Yuck -- display_paper_verbose does this.
+            if ($lasttype != "") {
+              echo "<hr size=\"1\">\n";
+            }
+
+            $lasttype = $paper["itemtype"];
+            echo "<h3>" . itemtype_label($lasttype) . "s</h3>\n";
+          }
           display_paper_verbose($paper);
         }
       }
       else {
+        echo "<b>Items:</b>\n";
         echo "<ul>\n";
         foreach ($papers as $paperinfo) {
           $paper = get_paper($paperinfo["paperid"]);
@@ -143,7 +153,7 @@ function display_book_details($proceeding, $verb) {
       }
     }
     else {
-      echo "No papers found.";
+      echo "No items found.";
     }
     echo "<br>\n";
 
@@ -154,5 +164,3 @@ function display_book_details($proceeding, $verb) {
     return FALSE;
   }
 }
-
-?>

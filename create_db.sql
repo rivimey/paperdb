@@ -32,10 +32,11 @@ use wotug;
 create table proceedings (
     proceedingid int unsigned not null auto_increment primary key,
     title varchar(240) not null,
+    reftext varchar(64) default null,
     subtitle varchar(240) null,
     publisherid int unsigned not null,
     series varchar(200) null,
-    isbn varchar(14) not null,
+    isbn varchar(20) not null,
     issn varchar(14) null,
     organisation int unsigned null,
     volume int unsigned null,
@@ -83,6 +84,7 @@ create table comments (
 create table papers (
     paperid int unsigned not null auto_increment primary key,
     title varchar(240) not null,
+    itemtype enum("KEYNOTE", "ENDNOTE", "PAPER", "FRINGE", "WORKSHOP") not null default "PAPER",
     reftext varchar(64),
     paper_url varchar(250) null,
     abstract text,
@@ -91,6 +93,25 @@ create table papers (
     accessed datetime null,
     accesses int unsigned null,
     KEY(title)
+);
+
+-- supplementary links associated with papers.
+create table paperlink (
+    linkid int unsigned not null auto_increment primary key,
+    paperid int unsigned not null,
+    href varchar(240) not null,
+    title varchar(240) not null,
+    filetype varchar(64) null,
+    verbose boolean not null default 0,
+    ordering int unsigned not null default 0,
+    KEY(paperid),
+    KEY(href)
+);
+
+-- paperlinks provide an alternative to paperfiles.
+create table oldpaperfile (
+    fileid int unsigned not null primary key,
+    linkid int unsigned not null
 );
 
 -- links papers and paper files together. Referenced by papers in papers table.

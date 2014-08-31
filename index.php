@@ -30,7 +30,7 @@ $proc_array = get_proceedings(0);
 
 // list of possible proceedings comes from database
 echo "<form method=\"get\" action=\"show_proc.php\">\n";
-flush();
+
 echo "<input type=\"hidden\" name=\"f\" value=\"4\">\n";
 echo "<select name=\"num\">\n";
 foreach ($proc_array as $thisproc) {
