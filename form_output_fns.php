@@ -438,7 +438,7 @@ function display_papers_form($paper = "") {
   // if passed an existing paper, proceed in "edit mode"
   $edit = is_array($paper);
 
-  $proc_array = get_proceedings(0);
+  $proc_array = get_proceedings(FALSE);
   if (!is_array($proc_array)) {
     do_para("No proceedings defined. Add the proceeding this paper is in first.");
     return;

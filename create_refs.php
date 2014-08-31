@@ -21,7 +21,7 @@ do_html_header("Create Ref Texts for all Proceedings", "noindex");
 
 $allrefs = array();
 
-$proc_array = get_proceedings(1);
+$proc_array = get_proceedings(TRUE);
 if ($proc_array) {
   foreach ($proc_array as $thisproc) {
     $procid = $thisproc["proceedingid"];

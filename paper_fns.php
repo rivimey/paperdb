@@ -23,7 +23,7 @@ require_once("db_fns.php");
 
 function get_list_query($query) {
   // query database for a list of papers in this proceeding
-  $conn = db_connect();
+  db_connect();
   $result = @mysql_query($query);
   if (!$result) {
     #echo "get_list_query: query \"$query\" failed.<br>\n";
@@ -46,7 +46,7 @@ function get_list_query($query) {
 
 function get_proceedingid_for_paper($paperid) {
   // query database for a list of papers in this proceeding
-  $conn = db_connect();
+  db_connect();
   $query = "select * from proceedings where paperlist.paperid = " . sqlvalue($paperid, "N") . " and paperlist.proceedingid = proceedings.proceedingid";
   $result = @mysql_query($query);
   if (!$result) {
@@ -62,16 +62,15 @@ function get_proceedingid_for_paper($paperid) {
   return $result;
 }
 
-//--------------------------------------------------------------------------------------
-//  get_paperinfo_by_proceedingid
-//
-// Return the publication info associated with a proceeding id
-//
-//--------------------------------------------------------------------------------------
-
+/**
+ * Return the publication info associated with a proceeding id.
+ *
+ * @param $procid
+ * @return array|bool|resource
+ */
 function get_paperinfo_by_proceedingid($procid) {
   // query database for a list of papers in this proceeding
-  $conn = db_connect();
+  db_connect();
   $query = "select * from paperlist where proceedingid ='$procid' order by firstpage";
   $result = @mysql_query($query);
   if (!$result) {
@@ -88,18 +87,16 @@ function get_paperinfo_by_proceedingid($procid) {
   return $result;
 }
 
-//--------------------------------------------------------------------------------------
-//  get_editors
-//
-// Return the editors of papers from the people database.
-// Authors are those people who are referenced in the
-// editorlist table, but we must convert that table to normal
-// form before returning it.
-//
-//--------------------------------------------------------------------------------------
-
+/**
+ * Return the editors of papers from the people database.
+ *
+ * Editors are those people who are referenced in the editorlist table, but
+ * we must convert that table to normal form before returning it.
+ *
+ * @return array|bool
+ */
 function get_editors() {
-  $conn = db_connect();
+  db_connect();
 
   $query = "drop table if exists list_of_eds";
   $editorlist = @mysql_query($query);
@@ -149,18 +146,17 @@ function get_editors() {
   return $result;
 }
 
-//--------------------------------------------------------------------------------------
-//  get_authors
-//
-// Return the authors of papers from the people database.
-// Authors are those people who are referenced in the
-// authorlist table, but we must convert that table to normal
-// form before returning it.
-//
-//--------------------------------------------------------------------------------------
-
+/**
+ * Return the authors of papers from the people database.
+ *
+ * Authors are those people who are referenced in the authorlist table, but
+ * we must convert that table to normal form before returning it.
+ *
+ * @return array|bool
+ *   List of the current authors.
+ */
 function get_authors() {
-  $conn = db_connect();
+  db_connect();
 
   $query = "drop table if exists list_of_auths";
   $authorlist = @mysql_query($query);
@@ -210,17 +206,16 @@ function get_authors() {
   return $result;
 }
 
-//--------------------------------------------------------------------------------------
-//  get_editor_papercount
-//
-//  Return the number of proceedings that an editor has been involved in 
-// note: this is not necessarily as the primary author!
-//
-//--------------------------------------------------------------------------------------
-
+/**
+ * Return the number of proceedings that an editor has been involved in
+ * note: this is not necessarily as the primary author.
+ *
+ * @param $personid
+ * @return bool|int
+ */
 function get_editor_papercount($personid) {
   // query database for a proceeding
-  $conn = db_connect();
+  db_connect();
   $query = "select distinct editors from editorlist where editorid=" . sqlvalue($personid, "N") . " order by ordering";
   $result = @mysql_query($query);
   if (!$result) {
@@ -232,17 +227,16 @@ function get_editor_papercount($personid) {
   return $num;
 }
 
-//--------------------------------------------------------------------------------------
-//  get_author_papercount
-//
-//  Return the number of papers that an author has been involved in 
-// note: this is not necessarily as the primary author!
-//
-//--------------------------------------------------------------------------------------
-
+/**
+ * Return the number of papers that an author has been involved in
+ * note: this is not necessarily as the primary author!
+ *
+ * @param $personid
+ * @return bool|int
+ */
 function get_author_papercount($personid) {
   // query database for a proceeding
-  $conn = db_connect();
+  db_connect();
   $query = "select distinct authors from authorlist where authorid=" . sqlvalue($personid, "N") . " order by ordering";
   $result = @mysql_query($query);
   if (!$result) {
@@ -254,17 +248,17 @@ function get_author_papercount($personid) {
   return $num;
 }
 
-//--------------------------------------------------------------------------------------
-//  get_authors_by_listid
-//
-// Return the list of people's names for a given author list.
-// The author list id is the same as the paper id.
-//
-//--------------------------------------------------------------------------------------
-
+/**
+ * Return the list of people's names for a given author list.
+ *
+ * The author list id is the same as the paper id.
+ *
+ * @param $author
+ * @return array|bool|resource
+ */
 function get_authors_by_listid($author) {
   // query database for the authors names for an author-list id
-  $conn = db_connect();
+  db_connect();
   $query = "select personid,title,firstname,lastname from people,authorlist " .
     "where authorlist.authors=" . sqlvalue($author, "N") . " and people.personid = authorlist.authorid " .
     "order by authorlist.ordering asc";
@@ -282,19 +276,21 @@ function get_authors_by_listid($author) {
   return $result;
 }
 
-//--------------------------------------------------------------------------------------
-//  get_editors_by_listid
-//
-// Return the editors for a particular proceeding.
-// Editors are those people who are referenced in the
-// editorlist table, but we must convert that table to normal
-// form before returning it.
-//
-//--------------------------------------------------------------------------------------
-
+/**
+ * Return the editors for a particular proceeding.
+ *
+ * Editors are those people who are referenced in the editorlist table, but we
+ * must convert that table to normal form before returning it.
+ *
+ * @param $editors
+ *   The id associated with the proceeding, which is also the key
+ * value for the editorlist table defining who the editors are.
+ *
+ * @return array|bool|resource
+ */
 function get_editors_by_listid($editors) {
   // query database for the editors names for an editor-list id
-  $conn = db_connect();
+  db_connect();
   $query = "select personid,title,firstname,lastname from people,editorlist " .
     "where editorlist.editors=" . sqlvalue($editors, "N") . " and people.personid = editorlist.editorid " .
     "order by editorlist.ordering asc";
@@ -312,19 +308,22 @@ function get_editors_by_listid($editors) {
   return $result;
 }
 
-
-//--------------------------------------------------------------------------------------
-//  get_proceedings
-//
-// Return a list of the proceedings.
-//
-//--------------------------------------------------------------------------------------
-
-function get_proceedings($ord) {
+/**
+ * Return a list of the proceedings, in ascending order of date.
+ *
+ * @param bool $asc
+ *   if TRUE, the list is returned in descending order.
+ *
+ * @return array|bool|resource
+ */
+function get_proceedings($asc = FALSE) {
   // query database for a list of categories
-  $conn = db_connect();
+  db_connect();
   $query = "select title,proceedingid,pubyear from proceedings order by pubyear";
-  if ($ord == 0) {
+  if ($asc) {
+    $query .= " asc";
+  }
+  else {
     $query .= " desc";
   }
   $query .= ",title";
@@ -343,16 +342,15 @@ function get_proceedings($ord) {
   return $result;
 }
 
-//--------------------------------------------------------------------------------------
-//  get_proceeding
-//
-// Return the proceedings table info for a given proceedingid.
-//
-//--------------------------------------------------------------------------------------
-
+/**
+ * Return the proceedings table info for a given proceedingid.
+ *
+ * @param $num
+ * @return array|bool|resource
+ */
 function get_proceeding($num) {
   // query database for a proceeding
-  $conn = db_connect();
+  db_connect();
   $query = "select * from proceedings where proceedingid=" . sqlvalue($num, "N");
   $result = @mysql_query($query);
   if (!$result) {
@@ -369,18 +367,21 @@ function get_proceeding($num) {
   return $result;
 }
 
-//--------------------------------------------------------------------------------------
-//  get_paper_file_ids
-//
-// Return 
-//
-//--------------------------------------------------------------------------------------
-
-function get_paper_file_ids($num) {
+/**
+ * Get the IDs of any files associated with the indicated paper.
+ *
+ * @param $papid
+ *   The paper ID of the paper.
+ *
+ * @return array|bool
+ *    If there is no file, returns FALSE, otherwise return the id, filename, and type of
+ * the requested files.
+ */
+function get_paper_file_ids($papid) {
   // query database for a proceeding
-  $conn = db_connect();
+  db_connect();
   $query = "select paperfile.fileid,paperfile.filename,paperfile.filetype from paperfilelist, paperfile " .
-    "where paperfilelist.paperid =" . sqlvalue($num, "N") . " and " .
+    "where paperfilelist.paperid =" . sqlvalue($papid, "N") . " and " .
     "paperfilelist.fileid = paperfile.fileid " .
     "order by paperfile.created";
 
@@ -399,16 +400,19 @@ function get_paper_file_ids($num) {
   return $result;
 }
 
-//--------------------------------------------------------------------------------------
-//  get_file_by_id
-//
-// Return the file for a given file id.
-//
-//--------------------------------------------------------------------------------------
-
+/**
+ * Return the file for a given file id.
+ *
+ * @param $num
+ *   The fileid of the desired record.
+ *
+ * @return array|bool
+ *   If there is no file, returns FALSE, otherwise return the file record
+ * from the paperfile table.
+ */
 function get_file_by_id($num) {
   // query database for a proceeding
-  $conn = db_connect();
+  db_connect();
   $query = "select * from paperfile where fileid = " . sqlvalue($num, "N");
   $result = @mysql_query($query);
   if (!$result) {
@@ -425,17 +429,19 @@ function get_file_by_id($num) {
   return $result;
 }
 
-//--------------------------------------------------------------------------------------
-//  get_papers_by_author
-//
-// Return the papers that have as an author the personid
-// provided.
-//
-//--------------------------------------------------------------------------------------
-
+/**
+ * Return the papers that have as an author the personid provided.
+ *
+ * @param $num
+ *   The authorlist ID of the desired record.
+ *
+ * @return array|bool
+ *   If there is no list, returns FALSE, otherwise return the papers records
+ * that include this author.
+ */
 function get_papers_by_author($num) {
   // query database for a proceeding
-  $conn = db_connect();
+  db_connect();
   $query = "select papers.* from papers,authorlist " .
     "where authorlist.authorid = " . sqlvalue($num, "N") . " and authorlist.authors = papers.paperid " .
     "order by papers.paperid";
@@ -463,7 +469,7 @@ function get_papers_by_author($num) {
 
 function get_proceedings_by_editor($num) {
   // query database for a proceeding
-  $conn = db_connect();
+  db_connect();
   $query = "select proceedings.* from proceedings,editorlist " .
     "where editorlist.editorid =" . sqlvalue($num, "N") . " and editorlist.editors = proceedings.proceedingid " .
     "order by proceedings.proceedingid";
@@ -490,7 +496,7 @@ function get_proceedings_by_editor($num) {
 //--------------------------------------------------------------------------------------
 
 function get_papers_by_proceedingid($num) {
-  $conn = db_connect();
+  db_connect();
   $query = "select papers.* from papers,paperlist where " .
     "paperlist.proceedingid =" . sqlvalue($num, "N") . " and paperlist.paperid = papers.paperid order by paperlist.firstpage";
   $result = @mysql_query($query);
@@ -515,7 +521,7 @@ function get_papers_by_proceedingid($num) {
 //--------------------------------------------------------------------------------------
 
 function get_papers_and_proceedings($so) {
-  $conn = db_connect();
+  db_connect();
 
   // validate the sort order value and define the field name.
   $sortfield['Title'] = "papertitle";
@@ -558,7 +564,7 @@ function get_papers_and_proceedings($so) {
 
 function get_proceedings_by_paperid($num) {
   // query database for a proceeding
-  $conn = db_connect();
+  db_connect();
   $query = "select proceedings.* from proceedings, paperlist where " .
     "paperlist.paperid =" . sqlvalue($num, "N") . " and paperlist.proceedingid = proceedings.proceedingid ";
   $result = @mysql_query($query);
@@ -583,7 +589,7 @@ function get_proceedings_by_paperid($num) {
 
 function get_paperinfo_by_paperid_and_procid($paid, $prid) {
   // query database for a proceeding
-  $conn = db_connect();
+  db_connect();
   $query = "select firstpage,lastpage from paperlist " .
     "where paperid=" . sqlvalue($paid, "N") . " and proceedingid=" . sqlvalue($prid, "N") . " order by firstpage";
   $result = @mysql_query($query);
@@ -608,7 +614,7 @@ function get_paperinfo_by_paperid_and_procid($paid, $prid) {
 
 function get_publishers() {
   // query database for a list of categories
-  $conn = db_connect();
+  db_connect();
   $query = "select name, city, publisherid from publisherinfo order by name";
   $result = @mysql_query($query);
   if (!$result) {
@@ -632,7 +638,7 @@ function get_publishers() {
 
 function get_authors_by_paperid($paperid) {
   // query database for a list of categories
-  $conn = db_connect();
+  db_connect();
   $query = "select authorid from authorlist where authors=" . sqlvalue($paperid, "N") . " order by ordering";
   $result = @mysql_query($query);
   if (!$result) {
@@ -656,7 +662,7 @@ function get_authors_by_paperid($paperid) {
 
 function get_comments_by_paper($paperid) {
   // query database for a list of categories
-  $conn = db_connect();
+  db_connect();
   $query = "select * from comments where paperid=" . sqlvalue($paperid, "N") . " order by created,commentid desc";
   $result = @mysql_query($query);
   if (!$result) {
@@ -680,7 +686,7 @@ function get_comments_by_paper($paperid) {
 
 function get_organisations() {
   // query database for a list of categories
-  $conn = db_connect();
+  db_connect();
   $query = "select name, orgid, city from organisations order by name";
   $result = @mysql_query($query);
   if (!$result) {
@@ -704,7 +710,7 @@ function get_organisations() {
 
 function get_publisher_name($pubid) {
   // query database for the name for a publisher id, return e.g. "IOS Press, Amsterdam"
-  $conn = db_connect();
+  db_connect();
   $query = "select name, city from publisherinfo where publisherid = " . sqlvalue($pubid, "N");
   $result = @mysql_query($query);
   if (!$result) {
@@ -729,7 +735,7 @@ function get_publisher_name($pubid) {
 
 function get_proceed_details($procid) {
   // query database for the name for an id, return array of details.
-  $conn = db_connect();
+  db_connect();
   $query = "select * from publisherinfo where proceedingid = " . sqlvalue($procid, "N");
   $result = @mysql_query($query);
   if (!$result) {
@@ -751,7 +757,7 @@ function get_proceed_details($procid) {
 //--------------------------------------------------------------------------------------
 
 function get_people() {
-  $conn = db_connect();
+  db_connect();
   $query = "select title,firstname,lastname,personid from people order by lastname";
   $result = @mysql_query($query);
   if (!$result) {
@@ -773,7 +779,7 @@ function get_people() {
 //--------------------------------------------------------------------------------------
 
 function get_person_name($persid) {
-  $conn = db_connect();
+  db_connect();
   $query = "select title,firstname,lastname from people where personid = " . sqlvalue($persid, "N");
   $result = @mysql_query($query);
   if (!$result) {
@@ -804,7 +810,7 @@ function get_person_name($persid) {
 //--------------------------------------------------------------------------------------
 
 function get_person($persid) {
-  $conn = db_connect();
+  db_connect();
   $query = "select * from people where personid = " . sqlvalue($persid, "N");
   $result = @mysql_query($query);
   if (!$result) {
@@ -833,7 +839,7 @@ function get_paper($num) {
     return FALSE;
   }
 
-  $conn = db_connect();
+  db_connect();
   $query = "select * from papers where paperid = " . sqlvalue($num, "N");
   $result = @mysql_query($query);
   if (!$result) {
@@ -863,7 +869,7 @@ function get_papers($sortorder) {
     $order["t"] = "title";
     $order["d"] = "date";
 
-    $conn = db_connect();
+    db_connect();
 
     $query = "select * from papers order by " . $order[$sortorder];
 
@@ -898,7 +904,7 @@ function update_paperfile_count($num) {
     return FALSE;
   }
 
-  $conn = db_connect();
+  db_connect();
   $query = "update paperfile set accessed = NOW(), accesses = accesses + 1 where fileid = " . sqlvalue($num, "N");
   $result = @mysql_query($query);
   if (!$result) {
@@ -921,7 +927,7 @@ function update_accessed($table, $keyfield, $num) {
     return FALSE;
   }
 
-  $conn = db_connect();
+  db_connect();
   $query = "update $table set accessed = NOW(), accesses = accesses + 1 where $keyfield = " . sqlvalue($num, "N");
   $result = @mysql_query($query);
   if (!$result) {
@@ -944,7 +950,7 @@ function update_modified($table, $keyfield, $num) {
     return FALSE;
   }
 
-  $conn = db_connect();
+  db_connect();
   $query = "update $table set modified = NOW() where $keyfield = " . sqlvalue($num, "N");
   $result = @mysql_query($query);
   if (!$result) {
@@ -984,7 +990,7 @@ function get_proceeding_last_modified($num) {
     return FALSE;
   }
 
-  $conn = db_connect();
+  db_connect();
   $query = "select MAX(papers.modified) as lastmod from papers,paperlist " .
     "where paperlist.paperid = papers.paperid and paperlist.proceedingid = " . sqlvalue($num, "N");
   $result = @mysql_query($query);
@@ -1005,7 +1011,7 @@ function get_proceeding_last_modified($num) {
 //--------------------------------------------------------------------------------------
 
 function get_allpapers_last_modified() {
-  $conn = db_connect();
+  db_connect();
   $query = "select MAX(papers.modified) as lastmod from papers";
   $result = @mysql_query($query);
   if (!$result) {
